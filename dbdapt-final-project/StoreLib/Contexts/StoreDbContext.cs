@@ -56,15 +56,14 @@ public partial class StoreDbContext : DbContext
             entity.ToTable("Item");
 
             entity.Property(e => e.OrderedPrice).HasColumnType("decimal(8, 2)");
-            entity.Property(e => e.ProductCode).HasMaxLength(6);
             entity.Property(e => e.Quantity).HasDefaultValue(1);
 
             entity.HasOne(d => d.Order).WithMany(p => p.Items)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK_Item_Order");
 
-            entity.HasOne(d => d.ProductCodeNavigation).WithMany(p => p.Items)
-                .HasForeignKey(d => d.ProductCode)
+            entity.HasOne(d => d.Product).WithMany(p => p.Items)
+                .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK_Item_Product");
         });
 
@@ -101,14 +100,14 @@ public partial class StoreDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductCode);
+            entity.HasKey(e => e.ProductId).HasName("PK_Product_1");
 
             entity.ToTable("Product");
 
-            entity.Property(e => e.ProductCode).HasMaxLength(6);
             entity.Property(e => e.Description).HasMaxLength(200);
             entity.Property(e => e.Photo).HasMaxLength(50);
             entity.Property(e => e.Price).HasColumnType("decimal(8, 2)");
+            entity.Property(e => e.ProductCode).HasMaxLength(6);
             entity.Property(e => e.ProductName).HasMaxLength(100);
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)

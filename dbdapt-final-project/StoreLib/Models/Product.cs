@@ -5,6 +5,8 @@ namespace StoreLib.Models;
 
 public partial class Product
 {
+    public int ProductId { get; set; }
+
     public string ProductCode { get; set; } = null!;
 
     public string ProductName { get; set; } = null!;

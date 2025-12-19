@@ -3,11 +3,13 @@
 ## Автор
 Луканин З. А. (ИСПП-31)
 ## Структура
-1. dbdapt-final-project
-    1. StoreApi - API для задания 3
-    2. StoreLib - Библиотека для клиентских приложений
-    3. StoreWeb - Веб-прилжение (Razor Pages) для заданий 4-5 
-    4. StoreWpf - Оконное приложение (WPF) для задания 6
-2. data-base-info
-    1. database_diagram - ER-диограмма БД (созданна в SSMS)
-    2. database_script - sql-запрос на создание БД
+* dbdapt-final-project
+    * StoreApi - API для задания 3
+    * StoreLib - Библиотека для клиентских приложений
+    * StoreWeb - Веб-прилжение (Razor Pages) для заданий 4-5 
+    * StoreWpf - Оконное приложение (WPF) для задания 6
+* data-base-info
+    * database_diagram - ER-диограмма БД (созданна в SSMS)
+    * database_script - sql-запрос на создание БД
+    * import - данные подготовленные для импорта в базу данных
+    * export - данные экспортированные из базы данных после настройки импортированных данных (в формате csv и xls)

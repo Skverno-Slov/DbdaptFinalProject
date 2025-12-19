@@ -9,7 +9,7 @@ public partial class Item
 
     public int OrderId { get; set; }
 
-    public string ProductCode { get; set; } = null!;
+    public int ProductId { get; set; }
 
     public int Quantity { get; set; }
 
@@ -17,5 +17,5 @@ public partial class Item
 
     public virtual Order Order { get; set; } = null!;
 
-    public virtual Product ProductCodeNavigation { get; set; } = null!;
+    public virtual Product Product { get; set; } = null!;
 }
