@@ -11,7 +11,7 @@ public partial class Order
 
     public DateOnly DeliveryDate { get; set; }
 
-    public int PersonId { get; set; }
+    public int UserId { get; set; }
 
     public short ReceiveCode { get; set; }
 
@@ -19,7 +19,7 @@ public partial class Order
 
     public virtual ICollection<Item> Items { get; set; } = new List<Item>();
 
-    public virtual Person Person { get; set; } = null!;
-
     public virtual Status Status { get; set; } = null!;
+
+    public virtual User User { get; set; } = null!;
 }

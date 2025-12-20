@@ -80,13 +80,13 @@ public partial class StoreDbContext : DbContext
         {
             entity.ToTable("Order");
 
-            entity.HasOne(d => d.Person).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.PersonId)
-                .HasConstraintName("FK_Order_Person");
-
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StatusId)
                 .HasConstraintName("FK_Order_Status");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Order_User");
         });
 
         modelBuilder.Entity<Person>(entity =>

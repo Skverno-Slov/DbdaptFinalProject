@@ -11,9 +11,7 @@ public partial class Person
 
     public string FirstName { get; set; } = null!;
 
-    public string MiddleName { get; set; } = null!;
-
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    public string? MiddleName { get; set; } = null!;
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }
