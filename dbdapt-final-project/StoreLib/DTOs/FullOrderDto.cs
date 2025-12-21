@@ -1,6 +1,6 @@
 ﻿namespace StoreLib.DTOs
 {
-    public class OrderDto
+    public class FullOrderDto
     {
         public int OrderId { get; set; }
 

@@ -13,6 +13,7 @@ namespace StoreWeb.Pages
     {
         private readonly ProductService _productService = new(context);
         private readonly ManufacturerService _manufacturerService = new(context);
+        private readonly OrderService _orderService = new(context);
 
         [BindProperty(SupportsGet = true)]
         public string? ProductDescription { get; set; }
@@ -28,10 +29,44 @@ namespace StoreWeb.Pages
 
         [BindProperty(SupportsGet = true)]
         public bool IsInStock { get; set; }
+
+        [TempData]
+        public string? OrderMessage { get; set; }
+
+        [TempData]
+        public bool IsOrderSuccess { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public string SortColumn { get; set; }
 
         public IList<ProductCardDto> Product { get; set; } = default!;
+
+        public async Task<IActionResult> OnPostCreateOrderAsync(int productId)
+        {
+            var stringId = HttpContext.Session.GetString("UserId");
+
+            var product = await _productService.GetProductCard(productId);
+
+            try
+            {
+                if (!Int32.TryParse(stringId, out int userId) || String.IsNullOrWhiteSpace(stringId))
+                    throw new ArgumentException("Пользователь не найден");
+
+                var order = await _orderService.CreateOrderInfoAsync(userId);
+
+                await _orderService.CreateOrderCompoundAsync(order.OrderInfoId, product);
+
+                OrderMessage = $" Заказ успешно создан.  Код для получения: {order.ReceiveCode}.  Дата доставки: {order.DeliveryDate:dd.MM.yyyy}";
+                IsOrderSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                OrderMessage = $"Ошибка при создании заказа: {ex.Message}";
+                IsOrderSuccess = false;
+            }
+
+            return RedirectToPage();
+        }
 
         public async Task OnGetAsync()
         {
@@ -44,8 +79,6 @@ namespace StoreWeb.Pages
                 new SelectListItem { Value = m.Name, Text = m.Name }));
 
             ViewData["Manufacturers"] = manufacturerList;
-
-            //Product?.Clear();
 
             var products = _productService.GetProductCards();
 

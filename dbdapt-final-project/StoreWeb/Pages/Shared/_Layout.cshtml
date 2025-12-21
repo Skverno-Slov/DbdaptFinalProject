@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor Accessor;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -21,13 +23,29 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item" style="margin:10px">
-                            <a class="btn btn-primary" style="background-color:#00FA9A; border-color:black; color:black" asp-area="" asp-page="/Goods">Товары</a>
+                            <a class="btn btn-primary" style="background-color:#00FA9A;
+                                border-color:black; color:black" asp-area="" asp-page="/Goods">Товары</a>
                         </li>
-                        <li class="nav-item" style="margin:10px">
-                            <a class="btn btn-primary" style="background-color:#00FA9A; border-color:black; color:black" asp-area="" asp-page="/Privacy">Privacy</a>
+                        <li>
+                            @if (Accessor.HttpContext.Session.GetString("Role") is not null)
+                            {
+                                <a class="btn btn-primary" style="background-color:#00FA9A;
+                                border-color:black; color:black" asp-area="" asp-page="/Orders">Заказы</a>
+                            }
                         </li>
                     </ul>
                 </div>
+                @if (Accessor.HttpContext.Session.GetString("Role") is null)
+                {
+                    <a class="btn btn-primary" style="background-color:#00FA9A;
+                        border-color:black; color:black" asp-area="" asp-page="/Login">Войти</a>
+                }
+                else
+                {
+                    <p style="margin:10px">@Accessor.HttpContext.Session.GetString("FullName")</p>
+                    <a class="btn btn-primary" style="background-color:#00FA9A;
+                        border-color:black; color:black" asp-area="" asp-page="/Login" asp-page-handler="Logout">Выйти</a>
+                }
             </div>
         </nav>
     </header>
@@ -39,7 +57,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - StoreWeb - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy;  BootWay - 2025
         </div>
     </footer>
 

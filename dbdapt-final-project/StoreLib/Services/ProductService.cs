@@ -1,12 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StoreLib.Contexts;
 using StoreLib.DTOs;
+using System.Threading.Tasks;
 
 namespace StoreLib.Services
 {
     public class ProductService(StoreDbContext context)
     {
         private readonly StoreDbContext _context = context;
+
+        public async Task<ProductCardDto> GetProductCard(int id)
+            => await _context.Products
+                .Select(p => new ProductCardDto
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    UnitName = p.Unit.Name,
+                    Price = p.Price,
+                    SupplierName = p.Supplier.Name,
+                    ManufacturerName = p.Manufacturer.Name,
+                    CategoryName = p.Category.Name,
+                    Discount = p.Discount,
+                    StoredQuantity = p.StoredQuantity,
+                    Description = p.Description,
+                    Photo = p.Photo
+                })
+                .FirstOrDefaultAsync(p => p.ProductId == id)
+                ?? throw new ArgumentNullException("Товар не найден");
 
         public IQueryable<ProductCardDto> GetProductCards()
         {

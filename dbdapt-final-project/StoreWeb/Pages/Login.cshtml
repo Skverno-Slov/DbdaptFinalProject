@@ -1,0 +1,41 @@
+﻿@page
+@model StoreWeb.Pages.LoginModel
+
+        @{
+        ViewData["Title"] = "Login";
+        }
+        
+<h1>Вход</h1>
+
+<h4>Пользователь</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-page-handler="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="User.Login" class="control-label">Логин</label>
+                <input asp-for="User.Login" class="form-control" />
+                <span asp-validation-for="User.Login" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.HashPassword" class="control-label">Пароль</label>
+                <input asp-for="User.HashPassword" class="form-control" type="password" />
+                <span asp-validation-for="User.HashPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin:10px">
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @Model.ErrorMessage
+                    </div>
+                }
+                <input type="submit" style="background-color:#00FA9A; border-color:black; color:black" value="Войти" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

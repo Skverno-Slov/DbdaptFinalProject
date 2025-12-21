@@ -77,7 +77,7 @@ namespace StoreApi.Controllers
             var user = await _userService.GetUserByLoginAsync(login);
 
             if (user == null)
-                return BadRequest();
+                return BadRequest(InvalidUserMessage);
 
             if (!_authService.VerifyPassword(password, user.HashPassword))
                 return Unauthorized(InvalidUserMessage);

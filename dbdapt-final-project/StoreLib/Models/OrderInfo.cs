@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace StoreLib.Models;
 
-public partial class Order
+public partial class OrderInfo
 {
-    public int OrderId { get; set; }
+    public int OrderInfoId { get; set; }
 
     public DateOnly OrderDate { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Order
 
     public byte StatusId { get; set; }
 
-    public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+    public virtual ICollection<OrderCompound> OrderCompounds { get; set; } = new List<OrderCompound>();
 
     public virtual Status Status { get; set; } = null!;
 

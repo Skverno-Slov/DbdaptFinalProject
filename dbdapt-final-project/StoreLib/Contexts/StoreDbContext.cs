@@ -18,11 +18,11 @@ public partial class StoreDbContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<Item> Items { get; set; }
-
     public virtual DbSet<Manufacturer> Manufacturers { get; set; }
 
-    public virtual DbSet<Order> Orders { get; set; }
+    public virtual DbSet<OrderCompound> OrdersCompound { get; set; }
+
+    public virtual DbSet<OrderInfo> OrdersInfo { get; set; }
 
     public virtual DbSet<Person> People { get; set; }
 
@@ -39,6 +39,7 @@ public partial class StoreDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=dbdaptFinalProject;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,40 +52,42 @@ public partial class StoreDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<Item>(entity =>
-        {
-            entity.ToTable("Item");
-
-            entity.Property(e => e.OrderedPrice).HasColumnType("decimal(8, 2)");
-            entity.Property(e => e.Quantity).HasDefaultValue(1);
-
-            entity.HasOne(d => d.Order).WithMany(p => p.Items)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK_Item_Order");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.Items)
-                .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK_Item_Product");
-        });
-
         modelBuilder.Entity<Manufacturer>(entity =>
         {
             entity.ToTable("Manufacturer");
 
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .HasColumnName("Name");
+            entity.Property(e => e.Name).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Order>(entity =>
+        modelBuilder.Entity<OrderCompound>(entity =>
         {
-            entity.ToTable("Order");
+            entity.HasKey(e => e.OrderCompoundId).HasName("PK_OrderCompoundId");
 
-            entity.HasOne(d => d.Status).WithMany(p => p.Orders)
+            entity.ToTable("OrderCompound");
+
+            entity.Property(e => e.OrderedPrice).HasColumnType("decimal(8, 2)");
+            entity.Property(e => e.Quantity).HasDefaultValue(1);
+
+            entity.HasOne(d => d.OrderInfo).WithMany(p => p.OrderCompounds)
+                .HasForeignKey(d => d.OrderInfoId)
+                .HasConstraintName("FK_OrderCompound_OrderInfo");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderCompounds)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK_OrderCompound_Product");
+        });
+
+        modelBuilder.Entity<OrderInfo>(entity =>
+        {
+            entity.HasKey(e => e.OrderInfoId).HasName("PK_Order");
+
+            entity.ToTable("OrderInfo");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.OrderInfos)
                 .HasForeignKey(d => d.StatusId)
                 .HasConstraintName("FK_Order_Status");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+            entity.HasOne(d => d.User).WithMany(p => p.OrderInfos)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_Order_User");
         });
@@ -161,6 +164,8 @@ public partial class StoreDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("User");
+
+            entity.HasIndex(e => e.Login, "UQ_User_Login").IsUnique();
 
             entity.Property(e => e.HashPassword).HasMaxLength(100);
             entity.Property(e => e.Login).HasMaxLength(50);

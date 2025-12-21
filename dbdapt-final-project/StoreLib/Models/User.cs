@@ -15,7 +15,7 @@ public partial class User
 
     public int PersonId { get; set; }
 
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    public virtual ICollection<OrderInfo> OrderInfos { get; set; } = new List<OrderInfo>();
 
     public virtual Person Person { get; set; } = null!;
 

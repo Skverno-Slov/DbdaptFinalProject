@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace StoreLib.Models;
 
-public partial class Item
+public partial class OrderCompound
 {
-    public int ItemId { get; set; }
+    public int OrderCompoundId { get; set; }
 
-    public int OrderId { get; set; }
+    public int OrderInfoId { get; set; }
 
     public int ProductId { get; set; }
 
@@ -15,7 +15,7 @@ public partial class Item
 
     public decimal OrderedPrice { get; set; }
 
-    public virtual Order Order { get; set; } = null!;
+    public virtual OrderInfo OrderInfo { get; set; } = null!;
 
     public virtual Product Product { get; set; } = null!;
 }

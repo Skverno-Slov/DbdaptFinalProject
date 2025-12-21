@@ -16,16 +16,16 @@ namespace StoreApi.Controllers
         //GET: api/Orders/5
         [HttpGet("{Login}")]
         [Authorize]
-        public async Task<ActionResult<List<OrderDto>>> GetOrdersByUserLogin(string Login)
+        public async Task<ActionResult<List<FullOrderDto>>> GetOrdersByUserLogin(string Login)
         {
             try
             {
-                var orders = await _context.Orders
+                var orders = await _context.OrdersInfo
                     .Include(u => u.User)
                     .Where(o => o.User.Login == Login)
-                    .Select(o => new OrderDto
+                    .Select(o => new FullOrderDto
                     {
-                        OrderId = o.OrderId,
+                        OrderId = o.OrderInfoId,
                         OrderDate = o.OrderDate,
                         DeliveryDate = o.DeliveryDate,
                         UserId = o.UserId,
@@ -54,8 +54,8 @@ namespace StoreApi.Controllers
                 deliveryStatus.Status ??= await _context.Statuses
                     .FirstOrDefaultAsync(s => s.Name == "Завершен");
 
-                var order = await _context.Orders
-                    .FirstOrDefaultAsync(o => o.OrderId == id);
+                var order = await _context.OrdersInfo
+                    .FirstOrDefaultAsync(o => o.OrderInfoId == id);
 
                 if (order == null)
                     return NotFound();
@@ -89,7 +89,7 @@ namespace StoreApi.Controllers
 
         private bool OrderExists(int id)
         {
-            return _context.Orders.Any(e => e.OrderId == id);
+            return _context.OrdersInfo.Any(e => e.OrderInfoId == id);
         }
     }
 }

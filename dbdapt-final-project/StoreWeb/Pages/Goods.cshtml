@@ -1,5 +1,6 @@
 ﻿@page
 @model StoreWeb.Pages.GoodsModel
+@inject IHttpContextAccessor Accessor;
 
 @{
     ViewData["Title"] = "Goods";
@@ -7,8 +8,13 @@
 
 <h1>Товары</h1>
 
-@* @Html.DisplayNameFor(model => model.Product[0].Unit) *@
-@* @Html.DisplayFor(modelItem => item.ProductCode) *@
+@if (!string.IsNullOrEmpty(Model.OrderMessage))
+{
+    <div class="alert @(Model.IsOrderSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+        @Model.OrderMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <form method="get">
     <input type="text"
@@ -31,8 +37,8 @@
     onchange="this.form.submit()">
     </select>
     <select class="form-control"
-            name="sortColumn"
-            onchange="this.form.submit()">
+    name="sortColumn"
+    onchange="this.form.submit()">
         <option value="name" selected="@(Model.SortColumn == "name")">По названию</option>/>
         <option value="supplier" selected="@(Model.SortColumn == "supplier")">По поставщику</option>/>
         <option value="price" selected="@(Model.SortColumn == "price")">По цене (дешевые)</option>
@@ -40,10 +46,10 @@
     </select>
     <div class="form-check" style="margin: 0;">
         <input class="form-check-input"
-               type="checkbox"
-               asp-for="IsDiscounted"
-               onchange="this.form.submit()"
-               id="IsDiscounted" />
+        type="checkbox"
+        asp-for="IsDiscounted"
+        onchange="this.form.submit()"
+        id="IsDiscounted" />
         <label class="form-check-label" for="onlyDiscounted">
             Только со скидкой
         </label>
@@ -51,10 +57,10 @@
 
     <div class="form-check" style="margin: 0;">
         <input class="form-check-input"
-               type="checkbox"
-               asp-for="IsInStock"
-               onchange="this.form.submit()"
-               id="onlyInStock" />
+        type="checkbox"
+        asp-for="IsInStock"
+        onchange="this.form.submit()"
+        id="onlyInStock" />
         <label class="form-check-label" for="onlyInStock">
             Только в наличии
         </label>
@@ -79,7 +85,7 @@
                     <p>@Html.DisplayNameFor(model => model.Product[0].SupplierName): @Html.DisplayFor(modelItem => item.SupplierName)</p>
                     @if(item.Discount > 0)
                     {
-                        <p>@Html.DisplayNameFor(model => model.Product[0].Price): <s style="color:grey">@item.Price</s> @item.DiscountedPrice</p>
+                        <p>@Html.DisplayNameFor(model => model.Product[0].Price): @item.DiscountedPrice <s style="color:grey">@item.Price</s></p>
                     }
                     else
                     {
@@ -90,7 +96,30 @@
                     <p style="white-space:pre-line">@Html.DisplayNameFor(model => model.Product[0].Description): @Html.DisplayFor(modelItem => item.Description)</p>
                 </div>
                 <div style="display: grid; place-content:center; width:200px">
-                    <h1> @Html.DisplayFor(modelItem => item.Discount) %</h1>
+                    @if (item.Discount > 0)
+                    {
+                        <div style="display: grid; place-content: center;
+                            border: 2px solid black;
+                            background-color: @(item.Discount > 15 ? "#2E8B57" : "#7FFF00");
+                            padding: 10px; border-radius: 10px;">
+                            <h1 style="font-size: 2.5rem; text-align: center; color: black">
+                                @Html.DisplayFor(modelItem => item.Discount)%
+                            </h1>
+                        </div>
+                    }
+                    @if (Accessor.HttpContext.Session.GetString("Role") is null)
+                    {
+                        <a class="btn btn-primary" style="background-color:#00FA9A;
+                            border-color:black; color:black" asp-area="" asp-page="/Login">Заказать</a>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="CreateOrder" style="display: inline;">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <input type="submit" class="btn btn-primary"
+                                    style="background-color:#00FA9A; border-color:black; color:black" value="Заказать"/>
+                        </form>
+                    }
                 </div>
             </div>
         </div>
