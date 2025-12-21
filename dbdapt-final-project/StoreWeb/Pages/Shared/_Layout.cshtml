@@ -26,7 +26,7 @@
                             <a class="btn btn-primary" style="background-color:#00FA9A;
                                 border-color:black; color:black" asp-area="" asp-page="/Goods">Товары</a>
                         </li>
-                        <li>
+                        <li style="margin:10px">
                             @if (Accessor.HttpContext.Session.GetString("Role") is not null)
                             {
                                 <a class="btn btn-primary" style="background-color:#00FA9A;

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using StoreLib.Contexts;
 using StoreLib.DTOs;
 using StoreLib.Models;
+using StoreLib.Services;
 
 namespace StoreApi.Controllers
 {
@@ -11,28 +12,19 @@ namespace StoreApi.Controllers
     [ApiController]
     public class OrdersController(StoreDbContext context) : ControllerBase
     {
-        private readonly StoreDbContext _context = context;
+        private readonly OrderService _orderService = new(context);
 
         //GET: api/Orders/5
         [HttpGet("{Login}")]
         [Authorize]
-        public async Task<ActionResult<List<FullOrderDto>>> GetOrdersByUserLogin(string Login)
+        public async Task<ActionResult<List<OrderViewDto>>> GetOrdersByUserLogin(string Login)
         {
             try
             {
-                var orders = await _context.OrdersInfo
-                    .Include(u => u.User)
-                    .Where(o => o.User.Login == Login)
-                    .Select(o => new FullOrderDto
-                    {
-                        OrderId = o.OrderInfoId,
-                        OrderDate = o.OrderDate,
-                        DeliveryDate = o.DeliveryDate,
-                        UserId = o.UserId,
-                        ReceiveCode = o.ReceiveCode,
-                        StatusId = o.StatusId,
-                    })
-                    .ToListAsync();
+                var orders = await _orderService.GetOrdersAsync(Login);
+
+                if (orders == null)
+                    return NotFound();
 
                 if (orders.Count == 0)
                     return NotFound();
@@ -51,45 +43,34 @@ namespace StoreApi.Controllers
         {
             try
             {
-                deliveryStatus.Status ??= await _context.Statuses
-                    .FirstOrDefaultAsync(s => s.Name == "Завершен");
+                var order = new OrderInfo();
 
-                var order = await _context.OrdersInfo
-                    .FirstOrDefaultAsync(o => o.OrderInfoId == id);
+                if (deliveryStatus.StatusName is null)
+                    order = await _orderService.ChangeOrderStatus(id,
+                                                            deliveryStatus.DeliveryDate);
+                else
+                    order = await _orderService.ChangeOrderStatus(id,
+                                                            deliveryStatus.DeliveryDate,
+                                                            deliveryStatus.StatusName);
 
-                if (order == null)
+                if (order is null)
                     return NotFound();
 
-                order.StatusId = deliveryStatus.Status.StatusId;
-                order.DeliveryDate = deliveryStatus.DeliveryDate
-                    ??= DateOnly.FromDateTime(DateTime.Now);
+                _orderService.ChangeOrderInfo(order);
 
-                _context.Entry(order).State = EntityState.Modified;
-
-                await _context.SaveChangesAsync();
+                return NoContent();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(id))
-                {
+                if (!_orderService.OrderExists(id))
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
             catch (Exception ex)
             {
                 return Problem($"Непредвиденная ошибка. {ex.Message}");
             }
-
-            return NoContent();
-        }
-
-        private bool OrderExists(int id)
-        {
-            return _context.OrdersInfo.Any(e => e.OrderInfoId == id);
         }
     }
 }

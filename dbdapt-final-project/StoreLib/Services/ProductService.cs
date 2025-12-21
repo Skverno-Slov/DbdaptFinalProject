@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StoreLib.Contexts;
 using StoreLib.DTOs;
+using StoreLib.Models;
 using System.Threading.Tasks;
 
 namespace StoreLib.Services
@@ -8,6 +9,41 @@ namespace StoreLib.Services
     public class ProductService(StoreDbContext context)
     {
         private readonly StoreDbContext _context = context;
+
+        public async Task<List<Product>> GetProductsAsync()
+            => await _context.Products.ToListAsync();
+
+        public async Task<Product>? GetProductAsync(int id)
+            => await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+        public async Task<Product>? GetProductByCodeAsync(string code)
+            => await _context.Products.FirstOrDefaultAsync(p => p.ProductCode == code);
+
+        public async Task ChangeProductAsync(Product product)
+        {
+            _context.Entry(product).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddProductAsync(Product product)
+        {
+            _context.Products.Add(product);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteProductAsync(Product product)
+        {
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+        }
+
+        public bool IsDiscountValid(byte discount)
+        {
+            if (discount >= 100)
+                return false;
+            return true;
+        }
 
         public async Task<ProductCardDto> GetProductCard(int id)
             => await _context.Products
@@ -117,5 +153,37 @@ namespace StoreLib.Services
                 "price_desc" => products.OrderByDescending(p => p.Price),
                 _ => products.OrderBy(p => p.ProductName)
             };
+
+        public Product ConvertDtoToProduct(ProductDto productDto)
+            => new Product()
+            {
+                ProductId = productDto.ProductId,
+                ProductName = productDto.ProductName,
+                ProductCode = productDto.ProductCode,
+                UnitId = productDto.UnitId,
+                Price = productDto.Price,
+                SupplierId = productDto.SupplierId,
+                ManufacturerId = productDto.ManufacturerId,
+                CategoryId = productDto.CategoryId,
+                Discount = productDto.Discount,
+                StoredQuantity = productDto.StoredQuantity,
+                Description = productDto.Description,
+                Photo = productDto.Photo
+            };
+
+        public bool ProductExists(int id) 
+            => _context.Products.Any(e => e.ProductId == id);
+
+        public bool UnitExists(int id)
+            => _context.Units.Any(e => e.UnitId == id);
+
+        public bool ManufacturerExists(int id)
+            => _context.Manufacturers.Any(e => e.ManufacturerId == id);
+
+        public bool SupplierExists(int id)
+            => _context.Suppliers.Any(e => e.SupplierId == id);
+
+        public bool CategorieExists(int id)
+            => _context.Categories.Any(e => e.CategoryId == id);
     }
 }

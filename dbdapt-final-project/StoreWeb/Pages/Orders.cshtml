@@ -5,9 +5,10 @@
     ViewData["Title"] = "Заказы";
 }
 
+<h1>Заказы</h1>
+
 @if(Model.OrderInfo.Count > 0)
 {
-    <h1>Заказы</h1>
     <table class="table">
         <thead>
             <tr>
@@ -48,5 +49,7 @@
 }
 else
 {
-    <h1> У вас нет заказов :(</h1>
+    <div style="display:grid; place-content:center; height:200px">
+        <h1 style="color:dimgrey"> У вас нет заказов :(</h1>
+    </div>
 }

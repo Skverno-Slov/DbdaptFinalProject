@@ -12,11 +12,11 @@ namespace StoreLib.Services
     {
         private readonly StoreDbContext _context = context;
 
-        private readonly string _secretKey = "ZFRSXHGTLDYBWJDTHIQNPHDSJDGHJFSU";
+        public static string SecretKey { get => "ZFRSXHGTLDYBWJDTHIQNPHDSJDGHJFSU"; }
 
         public string GenerateToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var roleName = _context.Roles.FirstOrDefault(r => r.RoleId == user.RoleId).Name;
 
@@ -43,7 +43,7 @@ namespace StoreLib.Services
                 var tokenParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey)),
                     ValidateLifetime = true,
                 };
 

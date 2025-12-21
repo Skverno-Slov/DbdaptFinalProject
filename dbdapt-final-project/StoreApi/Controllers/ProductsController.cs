@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using StoreLib.Contexts;
 using StoreLib.DTOs;
 using StoreLib.Models;
+using StoreLib.Services;
 
 namespace StoreApi.Controllers
 {
@@ -11,19 +12,19 @@ namespace StoreApi.Controllers
     [ApiController]
     public class ProductsController(StoreDbContext context) : ControllerBase
     {
-        private readonly StoreDbContext _context = context;
+        private readonly ProductService _productService = new(context);
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
-            => await _context.Products.ToListAsync();
+            => await _productService.GetProductsAsync();
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct([FromRoute] int id)
         {
             try
             {
-                var product = await _context.Products
-                    .FirstOrDefaultAsync(p => p.ProductId == id);
+                var product = await _productService
+                    .GetProductAsync(id);
 
                 if (product == null)
                     return NotFound();
@@ -37,12 +38,12 @@ namespace StoreApi.Controllers
         }
 
         [HttpGet("productCode/{productCode}")]
-        public async Task<ActionResult<Product>> GetProductByProductCode([FromRoute] string productCode)
+        public async Task<ActionResult<Product>> GetProductByCode([FromRoute] string productCode)
         {
             try
             {
-                var product = await _context.Products
-                    .FirstOrDefaultAsync(p => p.ProductCode == productCode);
+                var product = await _productService
+                    .GetProductByCodeAsync(productCode);
 
                 if (product == null)
                     return NotFound();
@@ -64,27 +65,34 @@ namespace StoreApi.Controllers
             {
                 if (id != productDto.ProductId)
                     return BadRequest();
+                Product product = _productService.ConvertDtoToProduct(productDto);
 
-                var product = await _context.Products.FindAsync(id);
                 if (product == null)
                     return NotFound();
 
-                product = await ConvertDtoToProduct(productDto, product);
+                if (!_productService.IsDiscountValid(product.Discount))
+                    return BadRequest("Слишком блоьшая скидка");
 
-                _context.Entry(product).State = EntityState.Modified;
+                if (!_productService.UnitExists(product.UnitId))
+                    return BadRequest("Еденица измерения не существует");
 
-                await _context.SaveChangesAsync();
+                if (!_productService.ManufacturerExists(product.ManufacturerId))
+                    return BadRequest("Производитель не существует");
+
+                if (!_productService.SupplierExists(product.SupplierId))
+                    return BadRequest("Поставщик не существует");
+
+                if (!_productService.CategorieExists(product.CategoryId))
+                    return BadRequest("Категория не существует");
+
+                await _productService.ChangeProductAsync(product);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
-                {
+                if (!_productService.ProductExists(id))
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
             catch (Exception ex)
             {
@@ -101,16 +109,28 @@ namespace StoreApi.Controllers
         {
             try
             {
-                var product = new Product();
+                var product = _productService.ConvertDtoToProduct(productDto);
 
-                product = await ConvertDtoToProduct(productDto, product);
+                if (!_productService.IsDiscountValid(product.Discount))
+                    return BadRequest("Слишком блоьшая скидка");
 
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
+                if (!_productService.UnitExists(product.UnitId))
+                    return BadRequest("Еденица измерения не существует");
+
+                if (!_productService.ManufacturerExists(product.ManufacturerId))
+                    return BadRequest("Производитель не существует");
+
+                if (!_productService.SupplierExists(product.SupplierId))
+                    return BadRequest("Поставщик не существует");
+
+                if (!_productService.CategorieExists(product.CategoryId))
+                    return BadRequest("Категория не существует");
+
+                await _productService.AddProductAsync(product);
 
                 return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return Problem($"Непредвиденная ошибка. {ex.Message}");
             }
@@ -123,41 +143,18 @@ namespace StoreApi.Controllers
         {
             try
             {
-                var product = await _context.Products.FindAsync(id);
+                var product = await _productService.GetProductAsync(id);
                 if (product == null)
                     return NotFound();
 
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
+                await _productService.DeleteProductAsync(product);
 
                 return NoContent();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return Problem($"Непредвиденная ошибка. {ex.Message}");
             }
-        }
-
-        private async Task<Product> ConvertDtoToProduct(ProductDto productDto, Product product)
-        {
-            product.ProductCode = productDto.ProductCode;
-            product.ProductName = productDto.ProductName;
-            product.UnitId = productDto.UnitId;
-            product.Price = productDto.Price;
-            product.SupplierId = productDto.SupplierId;
-            product.ManufacturerId = productDto.ManufacturerId;
-            product.CategoryId = productDto.CategoryId;
-            product.Discount = productDto.Discount;
-            product.StoredQuantity = productDto.StoredQuantity;
-            product.Description = productDto.Description;
-            product.Photo = productDto.Photo;
-
-            return product;
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.ProductId == id);
         }
     }
 }

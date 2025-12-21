@@ -17,10 +17,8 @@ namespace StoreLib.DTOs
         [Display(Name = "Итоговая стоимость")]
         public decimal FinalPrice { get; set; }
 
-        public string ProductName { get; set; } = null!;
-
-        public int Quantity { get; set; }
-
-        public decimal OrderedPrice { get; set; }
+        public short ReceiveCode { get; set; }
+        public DateOnly DeliveryDate { get; set; }
+        public string StatusName { get; set; } = null!;
     }
 }

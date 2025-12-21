@@ -9,6 +9,13 @@ namespace StoreLib.Services
     {
         private readonly StoreDbContext _context = context;
 
+        public async Task ChangeOrderInfo(OrderInfo order)
+        {
+            _context.Entry(order).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<OrderInfo> CreateOrderInfoAsync(int userId)
         {
             var random = new Random();
@@ -49,6 +56,9 @@ namespace StoreLib.Services
                     o.Product.ProductName,
                     o.Quantity,
                     o.OrderedPrice,
+                    o.OrderInfo.DeliveryDate,
+                    o.OrderInfo.ReceiveCode,
+                    o.OrderInfo.Status.Name,
                 })
                 .ToListAsync();
 
@@ -78,11 +88,13 @@ namespace StoreLib.Services
                     OrderDate = firstItem.OrderDate,
                     Compound = compoundString,
                     FinalPrice = totalPrice,
-                    ProductName = string.Join(", ", group.Select(g => g.ProductName).Distinct())
+                    ReceiveCode = firstItem.ReceiveCode,
+                    DeliveryDate = firstItem.DeliveryDate,
+                    StatusName = firstItem.Name
                 });
             }
 
-            return result.OrderByDescending(o => o.OrderDate).ToList(); 
+            return result.OrderByDescending(o => o.OrderDate).ToList();
         }
 
         public async Task<OrderCompound> CreateOrderCompoundAsync(int orederId,
@@ -102,5 +114,28 @@ namespace StoreLib.Services
 
             return item;
         }
+
+        public async Task<OrderInfo>? ChangeOrderStatus(int id, DateOnly? deliveryDate = null, string statusName = "Завершен")
+        {
+            var order = await _context.OrdersInfo
+                .FirstOrDefaultAsync(o => o.OrderInfoId == id);
+            
+            if(order is null)
+                return null;
+
+            var status = await _context.Statuses.FirstOrDefaultAsync(s => s.Name == statusName);
+
+            if(status is null)
+                return null;
+
+            order.StatusId = status.StatusId;
+            order.DeliveryDate = deliveryDate
+                ??= DateOnly.FromDateTime(DateTime.Now);
+
+            return order;
+        }
+
+        public bool OrderExists(int id)
+            => _context.OrdersInfo.Any(e => e.OrderInfoId == id);
     }
 }

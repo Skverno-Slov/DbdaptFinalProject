@@ -54,6 +54,10 @@ namespace StoreWeb.Pages
 
                 var order = await _orderService.CreateOrderInfoAsync(userId);
 
+                var changedProduct = await _productService.GetProductAsync(productId);
+                changedProduct.StoredQuantity--;
+                await _productService.ChangeProductAsync(changedProduct);
+
                 await _orderService.CreateOrderCompoundAsync(order.OrderInfoId, product);
 
                 OrderMessage = $" Заказ успешно создан.  Код для получения: {order.ReceiveCode}.  Дата доставки: {order.DeliveryDate:dd.MM.yyyy}";

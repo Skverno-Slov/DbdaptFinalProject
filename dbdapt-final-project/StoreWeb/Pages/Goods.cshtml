@@ -107,7 +107,11 @@
                             </h1>
                         </div>
                     }
-                    @if (Accessor.HttpContext.Session.GetString("Role") is null)
+                    @if (item.StoredQuantity == 0)
+                    {
+                        <p style="color:dimgrey">Нет в наличии</p>
+                    }
+                    else if (Accessor.HttpContext.Session.GetString("Role") is null)
                     {
                         <a class="btn btn-primary" style="background-color:#00FA9A;
                             border-color:black; color:black" asp-area="" asp-page="/Login">Заказать</a>

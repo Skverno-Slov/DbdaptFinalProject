@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using StoreLib.Contexts;
+using StoreLib.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,8 +13,8 @@ builder.Services.AddDbContext<StoreDbContext>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// секретный ключ для jwt-токена
-string _secretKey = "ZFRSXHGTLDYBWJDTHIQNPHDSJDGHJFSU";
+// секретный ключ для jwt-токена (из статическоо свойства сервиса)
+string _secretKey = AuthService.SecretKey;
 
 //Добавляет авторизацию черз jwt bearer
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
