@@ -71,9 +71,9 @@ public partial class StoreDbContext : DbContext
         {
             entity.ToTable("Manufacturer");
 
-            entity.Property(e => e.Manufacturer1)
+            entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .HasColumnName("Manufacturer");
+                .HasColumnName("Name");
         });
 
         modelBuilder.Entity<Order>(entity =>

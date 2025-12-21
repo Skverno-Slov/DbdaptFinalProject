@@ -1,0 +1,105 @@
+﻿@page
+@model StoreWeb.Pages.GoodsModel
+
+@{
+    ViewData["Title"] = "Goods";
+}
+
+<h1>Товары</h1>
+
+@* @Html.DisplayNameFor(model => model.Product[0].Unit) *@
+@* @Html.DisplayFor(modelItem => item.ProductCode) *@
+
+<form method="get">
+    <input type="text"
+    name="productDescription"
+    value="@Model.ProductDescription"
+    placeholder="Поиск..."
+    onchange="this.form.submit()"
+    class="form-control" />
+    <div style="display: flex; align-items: center; gap: 5px;">
+        <span>Максимальная цена:</span>
+        <input type="number"
+        asp-for="MaxPrice"
+        min="0"
+        step="1"
+        onchange="this.form.submit()"
+        class="form-control"/>
+    </div>
+    <select class="form-control" asp-items="ViewBag.Manufacturers"
+    asp-for="SelectedManufacturer"
+    onchange="this.form.submit()">
+    </select>
+    <select class="form-control"
+            name="sortColumn"
+            onchange="this.form.submit()">
+        <option value="name" selected="@(Model.SortColumn == "name")">По названию</option>/>
+        <option value="supplier" selected="@(Model.SortColumn == "supplier")">По поставщику</option>/>
+        <option value="price" selected="@(Model.SortColumn == "price")">По цене (дешевые)</option>
+        <option value="price_desc" selected="@(Model.SortColumn == "price_desc")">По цене (дорогие)</option>
+    </select>
+    <div class="form-check" style="margin: 0;">
+        <input class="form-check-input"
+               type="checkbox"
+               asp-for="IsDiscounted"
+               onchange="this.form.submit()"
+               id="IsDiscounted" />
+        <label class="form-check-label" for="onlyDiscounted">
+            Только со скидкой
+        </label>
+    </div>
+
+    <div class="form-check" style="margin: 0;">
+        <input class="form-check-input"
+               type="checkbox"
+               asp-for="IsInStock"
+               onchange="this.form.submit()"
+               id="onlyInStock" />
+        <label class="form-check-label" for="onlyInStock">
+            Только в наличии
+        </label>
+    </div>
+</form>
+
+@if(Model.Product.Count > 0){
+    @foreach (var item in Model.Product) {
+        <div class="card" style="width:100%; margin:10px">
+            <div style="display:flex">
+                <div class="card" style="width:320px; height:320px; display:flex">
+                    @{
+                        var imagePath = string.IsNullOrEmpty(item.Photo)
+                        ? "/Images/picture.png"
+                        : $"/Images/{item.Photo}";
+                    }
+                    <img src="@imagePath"/>
+                </div>
+                <div class="card" style="width:800px; display:table-column; margin:10px">
+                    <h3>@Html.DisplayFor(modelItem => item.CategoryName) | @Html.DisplayFor(modelItem => item.ProductName)</h3>
+                    <p>@Html.DisplayNameFor(model => model.Product[0].ManufacturerName): @Html.DisplayFor(modelItem => item.ManufacturerName)</p>
+                    <p>@Html.DisplayNameFor(model => model.Product[0].SupplierName): @Html.DisplayFor(modelItem => item.SupplierName)</p>
+                    @if(item.Discount > 0)
+                    {
+                        <p>@Html.DisplayNameFor(model => model.Product[0].Price): <s style="color:grey">@item.Price</s> @item.DiscountedPrice</p>
+                    }
+                    else
+                    {
+                        <p>@Html.DisplayNameFor(model => model.Product[0].Price): @Html.DisplayFor(modelItem => item.Price)</p>
+                    }
+                    <p>@Html.DisplayNameFor(model => model.Product[0].StoredQuantity): @Html.DisplayFor(modelItem => item.StoredQuantity)</p>
+                    <p>@Html.DisplayNameFor(model => model.Product[0].UnitName): @Html.DisplayFor(modelItem => item.UnitName)</p>
+                    <p style="white-space:pre-line">@Html.DisplayNameFor(model => model.Product[0].Description): @Html.DisplayFor(modelItem => item.Description)</p>
+                </div>
+                <div style="display: grid; place-content:center; width:200px">
+                    <h1> @Html.DisplayFor(modelItem => item.Discount) %</h1>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div style="display:grid; place-content:center; height: 300px">
+        <h1 style="color:dimgrey">По вашему запросу ничего не найдено</h1>
+    </div>
+}
+
