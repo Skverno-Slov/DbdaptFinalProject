@@ -3,7 +3,7 @@ using StoreLib.Contexts;
 using StoreLib.Models;
 using StoreLib.Services;
 using StoreWpf.Commands;
-using StoreWpf.View.Pages;
+using StoreWpf.Other;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;

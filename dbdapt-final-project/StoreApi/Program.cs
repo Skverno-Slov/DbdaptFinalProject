@@ -26,8 +26,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey)),
             ValidateLifetime = true,
 
-            ValidateIssuer = false,
-            ValidateAudience = false,
+            ValidateIssuer = false, // отключение проверки издателя и аудитории (по умолчанию они проверяются)
+            ValidateAudience = false, 
         };
     });
 builder.Services.AddAuthorization();
@@ -37,10 +37,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.MapScalarApiReference(); //для работы Scalar
 }
 
-app.UseAuthentication();
+app.UseAuthentication(); // Использовать авторизацию
 app.UseAuthorization();
 
 app.MapControllers();

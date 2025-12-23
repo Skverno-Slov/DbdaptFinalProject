@@ -8,14 +8,14 @@
 
 <h1>Товары</h1>
 
-@if (!string.IsNullOrEmpty(Model.OrderMessage))
+@if (!string.IsNullOrEmpty(Model.OrderMessage)) @*После успешного или не очень заказа выводить сообщение*@
 {
     <div class="alert @(Model.IsOrderSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
         @Model.OrderMessage
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
-
+@*Форма для отправки запроса на фильтрацию и сортировку, на метод GetAsync*@
 <form method="get">
     <input type="text"
     name="productDescription"
@@ -32,7 +32,8 @@
         onchange="this.form.submit()"
         class="form-control"/>
     </div>
-    <select class="form-control" asp-items="ViewBag.Manufacturers"
+    @*Источуник данных определяется в коде страницы через ViewData*@
+    <select class="form-control" asp-items="ViewBag.Manufacturers" 
     asp-for="SelectedManufacturer"
     onchange="this.form.submit()">
     </select>
@@ -66,8 +67,9 @@
         </label>
     </div>
 </form>
-
-@if(Model.Product.Count > 0){
+@*если товары не были найдены, вывести сообщение*@
+@if(Model.Product.Count > 0){ 
+    @*Карточки*@
     @foreach (var item in Model.Product) {
         <div class="card" style="width:100%; margin:10px">
             <div style="display:flex">
@@ -79,10 +81,12 @@
                     }
                     <img src="@imagePath"/>
                 </div>
+                @*DisplayNameFor - Отображает display(name="") для свойства объекта; DisplayFor - отображает значение свойства*@
                 <div class="card" style="width:800px; display:table-column; margin:10px">
                     <h3>@Html.DisplayFor(modelItem => item.CategoryName) | @Html.DisplayFor(modelItem => item.ProductName)</h3>
                     <p>@Html.DisplayNameFor(model => model.Product[0].ManufacturerName): @Html.DisplayFor(modelItem => item.ManufacturerName)</p>
                     <p>@Html.DisplayNameFor(model => model.Product[0].SupplierName): @Html.DisplayFor(modelItem => item.SupplierName)</p>
+                    @*Вывод фориатированной цены, если указана скидка*@
                     @if(item.Discount > 0)
                     {
                         <p>@Html.DisplayNameFor(model => model.Product[0].Price): @item.DiscountedPrice <s style="color:grey">@item.Price</s></p>
@@ -96,17 +100,22 @@
                     <p style="white-space:pre-line">@Html.DisplayNameFor(model => model.Product[0].Description): @Html.DisplayFor(modelItem => item.Description)</p>
                 </div>
                 <div style="display: grid; place-content:center; width:200px">
+                    @*Отображать скидку, если есть*@
                     @if (item.Discount > 0)
                     {
+                        @*Фон для скидок более 15%*@
                         <div style="display: grid; place-content: center;
                             border: 2px solid black;
-                            background-color: @(item.IsDiscountHight ? "#2E8B57" : "#7FFF00");
+                            background-color: @(item.IsDiscountHight ? "#2E8B57" : "#7FFF00"); 
                             padding: 10px; border-radius: 10px;">
                             <h1 style="font-size: 2.5rem; text-align: center; color: black">
                                 @Html.DisplayFor(modelItem => item.Discount)%
                             </h1>
                         </div>
                     }
+                    @*Если товара нет на складе - отображать сообщение вместо кнопки;
+                    если есть товар, пользователь не зарегистрирован - кнопка перенаправляет пользователя к окну авторизации;
+                    в ином случае кнопка создает новый заказ*@
                     @if (item.StoredQuantity == 0)
                     {
                         <p style="color:dimgrey">Нет в наличии</p>
@@ -118,6 +127,7 @@
                     }
                     else
                     {
+                        @*Фориа для отправки запроса на создание товара (метод OnPostCreateOrderAsync)*@
                         <form method="post" asp-page-handler="CreateOrder" style="display: inline;">
                             <input type="hidden" name="productId" value="@item.ProductId" />
                             <input type="submit" class="btn btn-primary"

@@ -14,12 +14,29 @@ namespace StoreApi.Controllers
     {
         private readonly ProductService _productService = new(context);
 
+        private const byte ProductCodeLenth = 6;
+        private const byte MinimumPriseValue = 0;
+        private const byte MinimumQuantityValue = 0;
+
+        /// <summary>
+        /// Получает список всех товаров
+        /// </summary>
+        /// <returns>Список всех товаров</returns>
+        /// <response code="200">Список товаров успешно получен</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
             => await _productService.GetProductsAsync();
 
+        /// <summary>
+        /// Получает товар по его идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
+        /// <returns>Объект товара</returns>
+        /// <response code="200">Товар найден</response>
+        /// <response code="404">Товар с указанным id не найден</response>
+        /// <response code="500">Непредвиденная ошибка</response>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct([FromRoute] int id)
+        public async Task<ActionResult<Product>> GetProduct([FromRoute] int id) //FromRoute - значение из пути запроса -> "{id}"
         {
             try
             {
@@ -37,6 +54,14 @@ namespace StoreApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Получает товар по его артикулу
+        /// </summary>
+        /// <param name="productCode">Артикул товара</param>
+        /// <returns>Объект товара</returns>
+        /// <response code="200">Товар найден</response>
+        /// <response code="404">Товар с указанным артикулом не найден</response>
+        /// <response code="500">Непредвиденная ошибка</response>
         [HttpGet("productCode/{productCode}")]
         public async Task<ActionResult<Product>> GetProductByCode([FromRoute] string productCode)
         {
@@ -56,7 +81,30 @@ namespace StoreApi.Controllers
             }
         }
 
-        // PUT: api/Products/5
+        /// <summary>
+        /// Обновляет существующий товар
+        /// </summary>
+        /// <param name="id">Идентификатор обновляемого товара</param>
+        /// <param name="productDto">DTO с обновленными данными товара</param>
+        /// <response code="204">Товар успешно обновлен</response>
+        /// <response code="400">
+        /// Возможные ошибки:
+        /// - Несоответствие id в пути и теле
+        /// - Не указано название товара
+        /// - Не указан артикул
+        /// - Длина артикула не равна 6 символам
+        /// - Цена отрицательная или равна 0
+        /// - Количество отрицательное
+        /// - Некорректная скидка
+        /// - Указанная единица измерения не существует
+        /// - Указанный производитель не существует
+        /// - Указанный поставщик не существует
+        /// - Указанная категория не существует
+        /// </response>
+        /// <response code="401">Пользователь не авторизован</response>
+        /// <response code="403">Недостаточно прав</response>
+        /// <response code="404">Товар с указанным id не найден</response>
+        /// <response code="500">Непредвиденная ошибка</response>
         [HttpPut("{id}")]
         [Authorize(Roles = "Администратор,Менеджер")]
         public async Task<IActionResult> PutProduct(int id, ProductDto productDto)
@@ -76,16 +124,16 @@ namespace StoreApi.Controllers
                 if (String.IsNullOrWhiteSpace(product.ProductCode))
                     return BadRequest("Введите артикул");
 
-                if (product.ProductCode.Length > 6)
+                if (product.ProductCode.Length > ProductCodeLenth)
                     return BadRequest("Артикул слишком длинный");
 
-                if (product.ProductCode.Length < 6)
+                if (product.ProductCode.Length < ProductCodeLenth)
                     return BadRequest("Артикул слишком короткий");
 
-                if (product.Price <= 0)
+                if (product.Price <= MinimumPriseValue)
                     return BadRequest("Цена не может быть отрицательной или 0");
 
-                if (product.StoredQuantity < 0)
+                if (product.StoredQuantity < MinimumQuantityValue)
                     return BadRequest("Количество не может быть отрицательным");
 
                 if (!_productService.CheckDiscountValid(product.Discount))
@@ -120,7 +168,29 @@ namespace StoreApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Products
+        /// <summary>
+        /// Создает новый товар
+        /// </summary>
+        /// <param name="productDto">DTO с данными нового товара</param>
+        /// <returns>Созданный товар</returns>
+        /// <response code="201">Товар успешно создан</response>
+        /// <response code="400">
+        /// Возможные ошибки:
+        /// - Не указано название товара
+        /// - Не указан артикул
+        /// - Артикул уже существует
+        /// - Длина артикула не равна 6 символам
+        /// - Цена меньше или равна 0
+        /// - Количество отрицательное
+        /// - Некорректная скидка
+        /// - Указанная единица измерения не существует
+        /// - Указанный производитель не существует
+        /// - Указанный поставщик не существует
+        /// - Указанная категория не существует
+        /// </response>
+        /// <response code="401">Пользователь не авторизован</response>
+        /// <response code="403">Недостаточно прав</response>
+        /// <response code="500">Непредвиденная ошибка</response>
         [HttpPost]
         [Authorize(Roles = "Администратор,Менеджер")]
         public async Task<ActionResult<Product>> PostProduct(ProductDto productDto)
@@ -138,16 +208,16 @@ namespace StoreApi.Controllers
                 if (_productService.ProductCodeExists(product.ProductCode))
                     return BadRequest("Артикул уже существкет");
 
-                if (product.ProductCode.Length > 6)
+                if (product.ProductCode.Length > ProductCodeLenth)
                     return BadRequest("Артикул слишком длинный");
 
-                if (product.ProductCode.Length < 6)
+                if (product.ProductCode.Length < ProductCodeLenth)
                     return BadRequest("Артикул слишком короткий");
 
-                if (product.Price <= 0)
+                if (product.Price <= MinimumPriseValue)
                     return BadRequest("Цена должна быть болше 0");
 
-                if (product.StoredQuantity < 0)
+                if (product.StoredQuantity < MinimumQuantityValue)
                     return BadRequest("Количество должно быть больше 0 или 0");
 
                 if (!_productService.CheckDiscountValid(product.Discount))
@@ -175,7 +245,15 @@ namespace StoreApi.Controllers
             }
         }
 
-        // DELETE: api/Products/5
+        /// <summary>
+        /// Удаляет товар по его идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор удаляемого товара</param>
+        /// <response code="204">Товар успешно удален</response>
+        /// <response code="401">Пользователь не авторизован</response>
+        /// <response code="403">Недостаточно прав</response>
+        /// <response code="404">Товар с указанным id не найден</response>
+        /// <response code="500">Непредвиденная ошибка</response>
         [HttpDelete("{id}")]
         [Authorize(Roles = "Администратор,Менеджер")]
         public async Task<IActionResult> DeleteProduct(int id)

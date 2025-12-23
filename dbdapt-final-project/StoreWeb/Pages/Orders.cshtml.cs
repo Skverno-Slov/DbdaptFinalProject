@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using StoreLib.Contexts;
 using StoreLib.DTOs;
-using StoreLib.Models;
 using StoreLib.Services;
 
 namespace StoreWeb.Pages
@@ -17,10 +10,11 @@ namespace StoreWeb.Pages
         private readonly OrderService _orderService = new(context);
         private readonly UserService _userService = new(context);
 
-        public IList<OrderViewDto> OrderInfo { get;set; } = default!;
+        public IList<OrderViewDto> OrderInfo { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
+            //Получение роли и id текущего пользователя
             var stringId = HttpContext.Session.GetString("UserId");
             var role = HttpContext.Session.GetString("Role");
             var orders = new List<OrderViewDto>();
@@ -32,12 +26,12 @@ namespace StoreWeb.Pages
 
                 var user = await _userService.GetUserAsync(userId)
                     ?? throw new ArgumentException("Пользователь не найден");
-                if(role == "Администратор" || role == "Менеджер")
-                    orders = await _orderService.GetOrdersAsync();
+                if (role == "Администратор" || role == "Менеджер")
+                    orders = await _orderService.GetOrdersAsync(); //если роль Администратор или Менеджер - выводить все заказы (не передавть логин в метод получения из библиотеки)
                 else
-                    orders = await _orderService.GetOrdersAsync(user.Login);
+                    orders = await _orderService.GetOrdersAsync(user.Login); // иначе заказы получаются по логину
 
-                if(orders is null)
+                if (orders is null)
                     OrderInfo = new List<OrderViewDto>();
                 else
                     OrderInfo = orders;

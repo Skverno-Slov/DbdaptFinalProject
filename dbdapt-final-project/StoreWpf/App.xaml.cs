@@ -10,7 +10,7 @@ namespace StoreWpf
     /// </summary>
     public partial class App : Application
     {
-        public static StoreDbContext StoreDbContext { get; } = new();
+        public static StoreDbContext StoreDbContext { get; } = new(); // статическое поле для хранения контекста БД
     }
 
 }

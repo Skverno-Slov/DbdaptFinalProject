@@ -1,4 +1,4 @@
-﻿@inject IHttpContextAccessor Accessor;
+﻿@inject IHttpContextAccessor Accessor; @*Добавленеи HttpContext на страницу*@
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,13 +21,14 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    @*Кнопки для навигации по страницам*@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item" style="margin:10px">
                             <a class="btn btn-primary" style="background-color:#00FA9A;
                                 border-color:black; color:black" asp-area="" asp-page="/Goods">Товары</a>
                         </li>
                         <li style="margin:10px">
-                            @if (Accessor.HttpContext.Session.GetString("Role") is not null)
+                            @if (Accessor.HttpContext.Session.GetString("Role") is not null) @*Если пользователь зарегистрирован отображать кнопку "Заказы"*@
                             {
                                 <a class="btn btn-primary" style="background-color:#00FA9A;
                                 border-color:black; color:black" asp-area="" asp-page="/Orders">Заказы</a>
@@ -35,7 +36,7 @@
                         </li>
                     </ul>
                 </div>
-                @if (Accessor.HttpContext.Session.GetString("Role") is null)
+                @if (Accessor.HttpContext.Session.GetString("Role") is null) @*Если пользователь не зарегистрирован отображать кнопку "Войти", иначе ФИО пользователя из HttpContext + кнопка выйти*@
                 {
                     <a class="btn btn-primary" style="background-color:#00FA9A;
                         border-color:black; color:black" asp-area="" asp-page="/Login">Войти</a>
@@ -44,7 +45,7 @@
                 {
                     <p style="margin:10px">@Accessor.HttpContext.Session.GetString("FullName")</p>
                     <a class="btn btn-primary" style="background-color:#00FA9A;
-                        border-color:black; color:black" asp-area="" asp-page="/Login" asp-page-handler="Logout">Выйти</a>
+                        border-color:black; color:black" asp-area="" asp-page="/Login" asp-page-handler="Logout">Выйти</a> @*Метод: asp-page-handler="Logout"; OnGetLogout на странице авторизации*@
                 }
             </div>
         </nav>

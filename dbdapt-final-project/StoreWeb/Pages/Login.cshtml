@@ -11,6 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        @*Форма для отправки запроса на вход (OnPostAsync)*@
         <form method="post" asp-page-handler="Login">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -24,6 +25,7 @@
                 <span asp-validation-for="User.HashPassword" class="text-danger"></span>
             </div>
             <div class="form-group" style="margin:10px">
+                @*Сообщение о неудачной попытке входа*@
                 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
                 {
                     <div class="alert alert-danger" role="alert">

@@ -1,5 +1,6 @@
 ﻿namespace StoreLib.DTOs
 {
+    // dto класс для запросов в API (тот же product, но без навигационных свойств)
     public class ProductDto
     {
         public int ProductId { get; set; }

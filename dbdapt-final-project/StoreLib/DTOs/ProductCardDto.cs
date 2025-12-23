@@ -2,6 +2,7 @@
 
 namespace StoreLib.DTOs
 {
+    // Dto класс дял отображения карточки продукта
     public class ProductCardDto
     {
         public int ProductId { get; set; }
@@ -24,6 +25,7 @@ namespace StoreLib.DTOs
         [Display(Name = "Описание")]
         public string? Description { get; set; }
         public string? Photo { get; set; }
+        // Цена со скидкой
         public decimal DiscountedPrice
         {
             get
@@ -34,6 +36,7 @@ namespace StoreLib.DTOs
             }
         }
 
+        // свойств для окраски фона, если скидка высокая (строго больше 15)
         public bool IsDiscountHight
         {
             get => Discount > 15;

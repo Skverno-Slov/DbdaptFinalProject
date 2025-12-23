@@ -9,8 +9,10 @@
 
 @if(Model.OrderInfo.Count > 0)
 {
+    @*Отображение заказов в виде таблицы*@
     <table class="table">
         <thead>
+            @*Заголовок (Display name для свойств OrderInfo)*@
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.OrderInfo[0].OrderInfoId)
@@ -28,6 +30,7 @@
             </tr>
         </thead>
         <tbody>
+            @*Тело таблицы*@
             @foreach (var item in Model.OrderInfo) {
                 <tr>
                     <td>
@@ -49,6 +52,7 @@
 }
 else
 {
+    @*Если у пользователя нет заказов, выводить сообщение*@
     <div style="display:grid; place-content:center; height:200px">
         <h1 style="color:dimgrey"> У вас нет заказов :(</h1>
     </div>

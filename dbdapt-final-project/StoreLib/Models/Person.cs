@@ -11,7 +11,7 @@ public partial class Person
 
     public string FirstName { get; set; } = null!;
 
-    public string? MiddleName { get; set; }
+    public string? MiddleName { get; set; } // ? - свойство может быть null
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

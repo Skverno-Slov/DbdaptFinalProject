@@ -1,4 +1,4 @@
-﻿using StoreWpf.View.Pages;
+﻿using StoreWpf.Other;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;

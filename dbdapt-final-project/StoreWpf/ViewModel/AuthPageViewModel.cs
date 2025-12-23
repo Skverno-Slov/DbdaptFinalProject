@@ -1,38 +1,43 @@
 ﻿using StoreLib.Contexts;
 using StoreLib.Services;
 using StoreWpf.Commands;
-using StoreWpf.View.Pages;
+using StoreWpf.Other;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace StoreWpf.ViewModel
 {
+    //ViewModel для страницы авторизации 
     public class AuthPageViewModel : INotifyPropertyChanged
     {
-        private static readonly StoreDbContext _context = App.StoreDbContext;
+        private static readonly StoreDbContext _context = App.StoreDbContext; //получение контекста из статического свойства App
 
         private readonly AuthService _authService = new(_context);
         private readonly UserService _userService = new(_context);
 
+        //поля
         private string? _login;
         private string? _password;
         private bool _isPasswordVisible;
+
+        //Команды
         private RelayCommand _command;
 
         public RelayCommand Command
         {
             get => _command ??= new RelayCommand(async obj => await VerifyUser(),
-                obj => CheckUserInput());
+                obj => CheckUserInput()); // Команда может выолнится, если CheckUserInput - это true, VerifyUser - логика команжы
         }
 
+        //свойства для привязки
         public string? Login
         {
             get => _login;
             set
             {
                 _login = value;
-                OnPropertyChanged();
+                OnPropertyChanged(); //Уведомление об изменении
             }
         }
         public string Password
@@ -73,10 +78,10 @@ namespace StoreWpf.ViewModel
                     return;
                 }
 
-                UserSession.Instanse.Role = user.Role.Name;
+                UserSession.Instance.Role = user.Role.Name;
                 PageHandler.NavigateToProductListPage();
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException) //Защита от слишком быстрых действий
             {
             }
             catch (Exception ex)
@@ -95,8 +100,8 @@ namespace StoreWpf.ViewModel
             => !String.IsNullOrWhiteSpace(Login)
                 && !String.IsNullOrWhiteSpace(Password);
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        public event PropertyChangedEventHandler? PropertyChanged; //Реализация интерфейса INotifyPropertyChanged
+        public void OnPropertyChanged([CallerMemberName] string prop = "") // Метод для вызова события PropertyChanged с именем изменившегося свойства
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));

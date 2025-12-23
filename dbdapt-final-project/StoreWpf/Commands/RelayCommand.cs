@@ -2,10 +2,11 @@
 
 namespace StoreWpf.Commands
 {
+    // моя крутая команда
     public class RelayCommand : ICommand
     {
-        private Action<object> execute;
-        private Func<object, bool> canExecute;
+        private Action<object> execute; //выполнение команды: делегат без возвращаемого значения
+        private Func<object, bool> canExecute; // Может ли команда быть выполнена: делегат с возвращаемым булевым значением
 
         public event EventHandler CanExecuteChanged
         {

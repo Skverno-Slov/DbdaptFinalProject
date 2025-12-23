@@ -19,7 +19,7 @@ public partial class OrderInfo
 
     public virtual ICollection<OrderCompound> OrderCompounds { get; set; } = new List<OrderCompound>();
 
-    public virtual Status Status { get; set; } = null!;
+    public virtual Status Status { get; set; } = null!; // навигационное свойство для связи 1:М. 1 статус у заказа, одинаковый статус может быть у многих заказов
 
     public virtual User User { get; set; } = null!;
 }

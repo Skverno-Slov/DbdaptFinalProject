@@ -4,7 +4,7 @@ using StoreLib.DTOs;
 using StoreLib.Models;
 using StoreLib.Services;
 using StoreWpf.Commands;
-using StoreWpf.View.Pages;
+using StoreWpf.Other;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -33,7 +33,7 @@ namespace StoreWpf.ViewModel
         private bool _isInStock;
         private bool _isDiscounted;
 
-        public ObservableCollection<ProductCardDto>? ProductCards { get; set; } = new();
+        public ObservableCollection<ProductCardDto>? ProductCards { get; set; } = new(); //ObservableCollection - отслеживаемый список
 
         public ObservableCollection<string> Manufacturers { get; set; } = new();
 
@@ -85,7 +85,7 @@ namespace StoreWpf.ViewModel
                 _productDescription = value;
                 OnPropertyChanged();
 
-                UpdateCommand.Execute(null);
+                UpdateCommand.Execute(null); //обновление после изменения (из за отсутсвия возможности привязать команду)
             }
         }
 
@@ -151,12 +151,12 @@ namespace StoreWpf.ViewModel
 
         private void NavigteToRedactorPageInChangeMode()
         {
-            PageHandler.NavigateToRedactorPage(false, SelectedProduct.ProductId);
+            PageHandler.NavigateToRedactorPage(false, SelectedProduct.ProductId); //Открыти страницы редактора в режиме изменения
         }
 
         private void NavigteToRedactorPageInCreateMode()
         {
-            PageHandler.NavigateToRedactorPage();
+            PageHandler.NavigateToRedactorPage(); //Открыти страницы редактора в режиме добавления
         }
 
         private bool IsProductSelected()
@@ -164,8 +164,8 @@ namespace StoreWpf.ViewModel
 
         private bool CheckRole()
         {
-            var role = UserSession.Instanse.Role;
-            return role == "Администратор" || role == "Менеджер";
+            var role = UserSession.Instance.Role;
+            return role == "Администратор" || role == "Менеджер"; //Получение роли текущего пользователя
         }
 
         private async Task DeleteProductAsync()
@@ -189,11 +189,11 @@ namespace StoreWpf.ViewModel
             }
         }
 
-        private async Task LoadDataAsync()
+        private async Task LoadDataAsync() //первая загрузка
         {
             try
             {
-                LoadStaticData();
+                LoadStaticData(); 
                 await LoadManufacturersAsync();
 
                 SelectedSortColumn = "По названию";
@@ -210,7 +210,7 @@ namespace StoreWpf.ViewModel
             }
         }
 
-        private async Task UpadteDataAsync()
+        private async Task UpadteDataAsync() //обновление
         {
             try
             {
@@ -226,6 +226,7 @@ namespace StoreWpf.ViewModel
             }
         }
 
+        //загрузка данных не трубующих БД
         private void LoadStaticData()
         {
             var sortColumns = new List<string>()
@@ -240,6 +241,7 @@ namespace StoreWpf.ViewModel
                 SortColumns?.Add(column);
         }
 
+        //Закгрузка производителей  из бд и создание источника данных для выпадающего списка + опция все производители
         private async Task LoadManufacturersAsync()
         {
             Manufacturers?.Clear();
@@ -251,32 +253,36 @@ namespace StoreWpf.ViewModel
                 Manufacturers?.Add(manufacturer);
         }
 
+        // загрузка товаров и применение фильтров -> сортировок
         private async Task LoadProductsAsync()
         {
             string? manufacrurerName = NormalizeData();
 
             var products = _productService.GetProductCards();
 
+            //фильтры
             products = _productService.ApplyDescriptionFilter(ProductDescription, products);
             products = _productService.ApplyManufacturerFilter(manufacrurerName, products);
             products = _productService.ApplyMaxPriceFilter(MaxPrice, products);
             products = _productService.ApplyInStockFilter(IsInStock, products);
             products = _productService.ApplyDiscountedFilter(IsDiscounted, products);
-
+            //сортировка
             products = _productService.ApplySorting(SelectedSortColumn, products);
 
             var productsList = await products.ToListAsync();
 
+            //обновление списка
             ProductCards?.Clear();
             foreach (var product in productsList)
                 ProductCards?.Add(product);
         }
 
+        //метод нужен для корректной работы ApplyManufacturerFilter
         private string? NormalizeData()
         {
             string? manufacrurerName;
             if (SelectedManufacturer == "Все производители")
-                manufacrurerName = "";
+                manufacrurerName = ""; //если выбраны "Все производители" отправлять в ApplyManufacturerFilter пустую строку
             else
                 manufacrurerName = SelectedManufacturer;
             return manufacrurerName;

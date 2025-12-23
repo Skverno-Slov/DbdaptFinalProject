@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:StoreWpf.View.Pages" xmlns:viewmodel="clr-namespace:StoreWpf.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:AuthPageViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="AuthWindow">
+      Title="AuthWindow" FontFamily="Times New Roman">
 
     <StackPanel VerticalAlignment="Center"
                 HorizontalAlignment="Center">
@@ -14,9 +14,12 @@
                    Padding="10px"
                    FontSize="24"/>
         <TextBlock Text="Логин"/>
-        <TextBox x:Name="LoginTextBox" Text="{Binding Login}"/>
+        <!--Привязка свойства Login (из ViewModel)-->
+        <TextBox x:Name="LoginTextBox" Text="{Binding Login}"/> 
         <TextBlock Text="Пароль"/>
+        <!--обработчик для типа привязки свойства к passwordbox-->
         <PasswordBox x:Name="PasswordBox" PasswordChanged="PasswordBox_PasswordChanged"/>
-        <Button x:Name="LoginButton" Content="Войти" Command="{Binding Command}"/>
+        <!--Привязка Команды (из ViewModel)-->
+        <Button x:Name="LoginButton" Content="Войти" Command="{Binding Command}"/> 
     </StackPanel>
 </Page>

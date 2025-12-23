@@ -1,5 +1,7 @@
 ﻿namespace StoreLib.Models
 {
+    //Класс для запроса на регистрацию
+
     public class RegistrationRequest
     {
         public string Login { get; set; } = null!;

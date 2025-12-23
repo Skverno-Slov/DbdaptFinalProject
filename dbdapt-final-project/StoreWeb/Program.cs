@@ -1,11 +1,11 @@
 using StoreLib.Contexts;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); 
 
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<StoreDbContext>();
-builder.Services.AddSession();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddDbContext<StoreDbContext>(); //Добавление контекста
+builder.Services.AddSession(); //добавление сессий
+builder.Services.AddHttpContextAccessor(); // добавление Accessor-а для хранения информации о текущем пользователе 
 
 var app = builder.Build();
 

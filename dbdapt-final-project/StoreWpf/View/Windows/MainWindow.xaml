@@ -5,6 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StoreWpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Frame x:Name="MainFrame"/>
+        Title="BootWay - управление товарами" Height="450" Width="800" 
+        FontFamily="Times New Roman"
+        Icon="/Resources/Icon.ico">
+    <Frame x:Name="MainFrame" 
+           FontFamily="Times New Roman"/>
+    <!--Главное окно с фреймом, где размещаются страницы-->
 </Window>

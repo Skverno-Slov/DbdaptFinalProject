@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:StoreWpf.View.Pages" xmlns:viewmodel="clr-namespace:StoreWpf.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:ProductListPageViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ProductsListPage" Loaded="ProductListPage_Loaded">
+      Title="ProductsListPage" Loaded="ProductListPage_Loaded"
+      FontFamily="Times New Roman">
 
     <DockPanel>
         <StackPanel DockPanel.Dock="Right"
@@ -24,6 +25,7 @@
                           SelectedItem="{Binding SelectedManufacturer}"
                           Width="200"/>
             </StackPanel>
+            <!--PreviewTextInput используется для валидации вводимых данных в коде страницы (в моём случае цифр)-->
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Цена до:"/>
                 <TextBox x:Name="MaxPriceTextBox" Text="{Binding MaxPrice}"
@@ -51,6 +53,7 @@
             <Button Content="Изменить" Command="{Binding NavigetToUpdatePageCommand}"/>
             <Button Content="Удалить" Command="{Binding DeleteCommand}"/>
         </StackPanel>
+        <!--DataGrid для отображения списка товаров (исползует ProductCardDto)-->
         <DataGrid ItemsSource="{Binding ProductCards}"
                   AutoGenerateColumns="False"
                   SelectionMode="Single"
@@ -85,8 +88,10 @@
                                     <TextBlock Text="{Binding DiscountedPrice}"
                                                 Foreground="Black"
                                                 FontWeight="Bold">
+                                        <!--2 Триггера для окраски текста в ячйке таблицы с дататемплейтом, в котором находится контейнер и 2 TextBlock-а + отображене разных цен-->
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
+                                                <!--Сеттер скрывает цену со скидкой, если скидки нет-->
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Discount}" Value="0">
@@ -100,8 +105,8 @@
                                     <TextBlock Text="{Binding Price}">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
+                                                <!--Сеттер окрашивает цену-->
                                                 <Setter Property="Foreground" Value="#D32F2F"/>
-
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Discount}" Value="0">
                                                         <Setter Property="Foreground" Value="Black"/>
@@ -116,8 +121,10 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
+                <!--StringFormat={}{0}% - добавляет % после значения скидки-->
                 <DataGridTextColumn Header="Скидка"
                                     Binding="{Binding Discount, StringFormat={}{0}%}">
+                    <!--Триггер для окраски фона высоких скидок, исползует IsDiscountHight из ProductCardDto-->
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
@@ -141,6 +148,7 @@
                     Binding="{Binding Photo}">
                 </DataGridTextColumn>
             </DataGrid.Columns>
+            <!--Триггер для окраски всей строки в голубой, если на складе нет этого товара-->
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>

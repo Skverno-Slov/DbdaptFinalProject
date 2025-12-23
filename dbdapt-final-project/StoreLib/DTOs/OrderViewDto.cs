@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StoreLib.DTOs
 {
+    //Dto класс для отображения заказов 
+
     public class OrderViewDto
     {
-        [Display(Name = "Номер заказа")]
+        [Display(Name = "Номер заказа")] // Отображаемое название свойства
         public int OrderInfoId { get; set; }
 
         [Display(Name = "Дата заказа")]

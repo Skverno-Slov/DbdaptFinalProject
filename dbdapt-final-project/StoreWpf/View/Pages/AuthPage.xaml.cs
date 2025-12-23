@@ -8,18 +8,18 @@ namespace StoreWpf.View.Pages
     /// </summary>
     public partial class AuthPage : Page
     {
+        AuthPageViewModel _authPageViewModel;
         public AuthPage()
         {
             InitializeComponent();
+            _authPageViewModel = new AuthPageViewModel();
 
-            DataContext = new AuthPageViewModel();
+            DataContext = _authPageViewModel; //Создание контекста данных для биндинга (к AuthPageViewModel)
         }
 
         private void PasswordBox_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
         {
-            var viewModel = DataContext as AuthPageViewModel;
-
-            viewModel.Password = PasswordBox.Password;
+            _authPageViewModel.Password = PasswordBox.Password; //Здесь эта типа привязка
         }
     }
 }

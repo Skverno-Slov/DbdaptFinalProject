@@ -3,6 +3,7 @@ using StoreWpf.ViewModel;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace StoreWpf.View.Pages
 {
@@ -23,10 +24,11 @@ namespace StoreWpf.View.Pages
 
         private void ProductRedactorPage_Loaded(object sender, RoutedEventArgs e)
         {
-            _viewModel.LoadCommand.Execute(null);
+            _viewModel.LoadCommand.Execute(null); //загрузка данных (нужна для корректной работы асинхронных методов)
         }
 
-        private void DiscountTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        //Проверка валидности целый чисел в DiscountTextBox
+        private void DiscountTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (!char.IsDigit(e.Text, 0))
             {
@@ -35,7 +37,8 @@ namespace StoreWpf.View.Pages
             }
         }
 
-        private void QuantityTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        //Проверка валидности целый чисел в QuantityTextBox
+        private void QuantityTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (!char.IsDigit(e.Text, 0))
             {
@@ -43,7 +46,8 @@ namespace StoreWpf.View.Pages
             }
         }
 
-        private void PriceTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        //Проверка валидности вещественных чисел в PriceTextBox
+        private void PriceTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var regex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
             var text = PriceTextBox.Text + e.Text;

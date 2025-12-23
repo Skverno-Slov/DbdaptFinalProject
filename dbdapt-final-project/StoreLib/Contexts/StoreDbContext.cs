@@ -38,6 +38,7 @@ public partial class StoreDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    //Замените строку подключения пж
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=dbdaptFinalProject;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
 

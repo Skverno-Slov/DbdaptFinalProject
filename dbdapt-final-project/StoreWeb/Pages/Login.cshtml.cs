@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using StoreLib.Contexts;
 using StoreLib.Models;
 using StoreLib.Services;
@@ -36,7 +31,9 @@ namespace StoreWeb.Pages
                 ErrorMessage = "Неверные логин или пароль.";
                 return Page();
             }
-                
+
+            /*После успешного входа записывать в контекст полне имя (.SetString("FullName", $"{user.Person.LastName} {user.Person.FirstName} {user.Person.MiddleName}");)
+             Id пользователя и роль, после перенаправлять на главную страницу*/
             HttpContext.Session
                 .SetString("FullName", $"{user.Person.LastName} {user.Person.FirstName} {user.Person.MiddleName}");
             HttpContext.Session
@@ -48,6 +45,7 @@ namespace StoreWeb.Pages
 
         public IActionResult OnGetLogout()
         {
+            //Очистка даннных контекста и перенаправление на страницу входа
             HttpContext.Session.Clear();
             return RedirectToPage("/Login");
         }

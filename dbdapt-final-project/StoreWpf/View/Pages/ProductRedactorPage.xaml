@@ -6,7 +6,9 @@
       xmlns:local="clr-namespace:StoreWpf.View.Pages" xmlns:viewmodel="clr-namespace:StoreWpf.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:ProductRedactorPageViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ProductRedactorPage" Loaded="ProductRedactorPage_Loaded">
+      Title="ProductRedactorPage" 
+      Loaded="ProductRedactorPage_Loaded" 
+      FontFamily="Times New Roman">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" 
                   HorizontalScrollBarVisibility="Auto">
@@ -15,6 +17,7 @@
                 Width="400">
             <TextBlock Text="Редактирование" FontSize="24"/>
             <TextBlock Text="Артикул"/>
+            <!--Здесь привязка выполняется к свойству объекта (из ViewModel)-->
             <TextBox Text="{Binding Product.ProductCode}"
                  />
             <TextBlock Text="Название"/>
@@ -35,6 +38,7 @@
                  Text="{Binding Product.StoredQuantity}"
                  PreviewTextInput="QuantityTextBox_PreviewTextInput"/>
             <TextBlock Text="Единица измерения"/>
+            <!--ItemsSource - привязка источника данных; SelectedItem - привязка выбранного элемента-->
             <ComboBox ItemsSource="{Binding Units}"
                   SelectedItem="{Binding SelectedUnit}"
                   DisplayMemberPath="Name"/>
@@ -54,6 +58,7 @@
                Width="200"
                Height="200"/>
             <StackPanel Orientation="Horizontal" Margin="5px">
+                <!--Mode=OneWay - данные идут только из источниак (ViewModel)-->
                 <TextBox Text="{Binding ImagePath, Mode=OneWay}" 
                                  IsReadOnly="True"
                                  Width="250"
@@ -66,6 +71,7 @@
                                 Width="60"/>
             </StackPanel>
 
+            <!--биндинг к Visibility нужен для реализации открытия страницы в разных режимах-->
             <Button Command="{Binding AddCommand}" Visibility="{Binding AddButtonVisibilityType}" Content="Добавить"/>
             <Button Command="{Binding ChangeCommand}" Visibility="{Binding ChangeButtonVisibilityType}" Content="Изменить"/>
         </StackPanel>

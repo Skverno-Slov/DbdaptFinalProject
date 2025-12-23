@@ -35,9 +35,10 @@ namespace StoreWpf.View.Pages
 
         private void ProductListPage_Loaded(object sender, RoutedEventArgs e)
         {
-            _viewModel.LoadCommand.Execute(null);
+            _viewModel.LoadCommand.Execute(null); //загрузка данных (нужна для корректной работы асинхронных методов)
         }
 
+        //Проверка валидности вещественных чисел в MaxPriceTextBox
         private void MaxPriceTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var regex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
