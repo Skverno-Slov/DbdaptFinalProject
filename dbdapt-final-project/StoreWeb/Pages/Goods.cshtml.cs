@@ -12,7 +12,6 @@ namespace StoreWeb.Pages
     public class GoodsModel(StoreDbContext context) : PageModel
     {
         private readonly ProductService _productService = new(context);
-        private readonly ManufacturerService _manufacturerService = new(context);
         private readonly OrderService _orderService = new(context);
 
         [BindProperty(SupportsGet = true)]
@@ -74,7 +73,7 @@ namespace StoreWeb.Pages
 
         public async Task OnGetAsync()
         {
-            var manufacturers = await _manufacturerService.GetManufacturersAsync();
+            var manufacturers = await _productService.GetManufacturersAsync();
             var manufacturerList = new List<SelectListItem>
             {
                 new() { Value = "", Text = "Все производители" }

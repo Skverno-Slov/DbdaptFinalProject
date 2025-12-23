@@ -39,10 +39,10 @@
     <select class="form-control"
     name="sortColumn"
     onchange="this.form.submit()">
-        <option value="name" selected="@(Model.SortColumn == "name")">По названию</option>/>
-        <option value="supplier" selected="@(Model.SortColumn == "supplier")">По поставщику</option>/>
-        <option value="price" selected="@(Model.SortColumn == "price")">По цене (дешевые)</option>
-        <option value="price_desc" selected="@(Model.SortColumn == "price_desc")">По цене (дорогие)</option>
+        <option value="По названию" selected="@(Model.SortColumn == "По названию")">По названию</option>/>
+        <option value="По поставщику" selected="@(Model.SortColumn == "По поставщику")">По поставщику</option>/>
+        <option value="По цене (дешевые)" selected="@(Model.SortColumn == "По цене (дешевые)")">По цене (дешевые)</option>
+        <option value="По цене (дорогие)" selected="@(Model.SortColumn == "По цене (дорогие)")">По цене (дорогие)</option>
     </select>
     <div class="form-check" style="margin: 0;">
         <input class="form-check-input"
@@ -100,7 +100,7 @@
                     {
                         <div style="display: grid; place-content: center;
                             border: 2px solid black;
-                            background-color: @(item.Discount > 15 ? "#2E8B57" : "#7FFF00");
+                            background-color: @(item.IsDiscountHight ? "#2E8B57" : "#7FFF00");
                             padding: 10px; border-radius: 10px;">
                             <h1 style="font-size: 2.5rem; text-align: center; color: black">
                                 @Html.DisplayFor(modelItem => item.Discount)%

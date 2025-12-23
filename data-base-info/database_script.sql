@@ -1,13 +1,7 @@
 USE [master]
 GO
-/****** Object:  Database [dbdaptFinalProject]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Database [dbdaptFinalProject]    Script Date: 23.12.2025 16:30:18 ******/
 CREATE DATABASE [dbdaptFinalProject]
- CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'dbdaptFinalProject', FILENAME = N'C:\Users\THUNDER\dbdaptFinalProject.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
- LOG ON 
-( NAME = N'dbdaptFinalProject_log', FILENAME = N'C:\Users\THUNDER\dbdaptFinalProject_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
- WITH CATALOG_COLLATION = DATABASE_DEFAULT
 GO
 ALTER DATABASE [dbdaptFinalProject] SET COMPATIBILITY_LEVEL = 150
 GO
@@ -80,7 +74,7 @@ ALTER DATABASE [dbdaptFinalProject] SET QUERY_STORE = OFF
 GO
 USE [dbdaptFinalProject]
 GO
-/****** Object:  Table [dbo].[Category]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[Category]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -94,56 +88,56 @@ CREATE TABLE [dbo].[Category](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Item]    Script Date: 20.12.2025 4:20:46 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Item](
-	[ItemId] [int] IDENTITY(1,1) NOT NULL,
-	[OrderId] [int] NOT NULL,
-	[ProductId] [int] NOT NULL,
-	[Quantity] [int] NOT NULL,
-	[OrderedPrice] [decimal](8, 2) NOT NULL,
- CONSTRAINT [PK_Item] PRIMARY KEY CLUSTERED 
-(
-	[ItemId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Manufacturer]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[Manufacturer]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Manufacturer](
 	[ManufacturerId] [int] IDENTITY(1,1) NOT NULL,
-	[Manufacturer] [nvarchar](100) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
  CONSTRAINT [PK_Manufacturer] PRIMARY KEY CLUSTERED 
 (
 	[ManufacturerId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Order]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[OrderCompound]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[Order](
-	[OrderId] [int] IDENTITY(1,1) NOT NULL,
+CREATE TABLE [dbo].[OrderCompound](
+	[OrderCompoundId] [int] IDENTITY(1,1) NOT NULL,
+	[OrderInfoId] [int] NOT NULL,
+	[ProductId] [int] NOT NULL,
+	[Quantity] [int] NOT NULL,
+	[OrderedPrice] [decimal](8, 2) NOT NULL,
+ CONSTRAINT [PK_OrderCompound] PRIMARY KEY CLUSTERED 
+(
+	[OrderCompoundId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[OrderInfo]    Script Date: 23.12.2025 16:30:18 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[OrderInfo](
+	[OrderInfoId] [int] IDENTITY(1,1) NOT NULL,
 	[OrderDate] [date] NOT NULL,
 	[DeliveryDate] [date] NOT NULL,
 	[UserId] [int] NOT NULL,
 	[ReceiveCode] [smallint] NOT NULL,
 	[StatusId] [tinyint] NOT NULL,
- CONSTRAINT [PK_Order] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_OrderInfo] PRIMARY KEY CLUSTERED 
 (
-	[OrderId] ASC
+	[OrderInfoId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Person]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[Person]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -152,14 +146,14 @@ CREATE TABLE [dbo].[Person](
 	[PersonId] [int] IDENTITY(1,1) NOT NULL,
 	[LastName] [nvarchar](50) NOT NULL,
 	[FirstName] [nvarchar](50) NOT NULL,
-	[MiddleName] [nvarchar](50) NOT NULL,
+	[MiddleName] [nvarchar](50) NULL,
  CONSTRAINT [PK_Person] PRIMARY KEY CLUSTERED 
 (
 	[PersonId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Product]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[Product]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -183,7 +177,7 @@ CREATE TABLE [dbo].[Product](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Role]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[Role]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -197,7 +191,7 @@ CREATE TABLE [dbo].[Role](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Status]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[Status]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -211,7 +205,7 @@ CREATE TABLE [dbo].[Status](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Supplier]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[Supplier]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -225,7 +219,7 @@ CREATE TABLE [dbo].[Supplier](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Unit]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[Unit]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -239,7 +233,7 @@ CREATE TABLE [dbo].[Unit](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[User]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Table [dbo].[User]    Script Date: 23.12.2025 16:30:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -264,87 +258,87 @@ INSERT [dbo].[Category] ([CategoryId], [Name]) VALUES (2, N'Мужская об�
 GO
 SET IDENTITY_INSERT [dbo].[Category] OFF
 GO
-SET IDENTITY_INSERT [dbo].[Item] ON 
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (39, 1, 1, 2, CAST(4990.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (40, 1, 2, 2, CAST(3244.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (41, 2, 3, 1, CAST(4499.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (42, 3, 5, 10, CAST(3800.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (43, 4, 7, 5, CAST(2700.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (44, 4, 8, 4, CAST(1890.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (45, 4, 4, 1, CAST(5900.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (46, 5, 1, 2, CAST(4990.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (47, 5, 2, 2, CAST(3244.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (48, 6, 3, 1, CAST(4499.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (49, 6, 4, 1, CAST(5900.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (50, 7, 5, 3, CAST(3800.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (51, 7, 6, 10, CAST(4100.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (52, 8, 7, 5, CAST(2700.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (53, 8, 8, 4, CAST(1890.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (54, 9, 9, 5, CAST(4300.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (55, 9, 10, 1, CAST(2800.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (56, 9, 6, 1, CAST(4100.00 AS Decimal(8, 2)))
-GO
-INSERT [dbo].[Item] ([ItemId], [OrderId], [ProductId], [Quantity], [OrderedPrice]) VALUES (57, 10, 11, 5, CAST(2156.00 AS Decimal(8, 2)))
-GO
-SET IDENTITY_INSERT [dbo].[Item] OFF
-GO
 SET IDENTITY_INSERT [dbo].[Manufacturer] ON 
 GO
-INSERT [dbo].[Manufacturer] ([ManufacturerId], [Manufacturer]) VALUES (1, N'Kari')
+INSERT [dbo].[Manufacturer] ([ManufacturerId], [Name]) VALUES (1, N'Kari')
 GO
-INSERT [dbo].[Manufacturer] ([ManufacturerId], [Manufacturer]) VALUES (2, N'Marco Tozzi')
+INSERT [dbo].[Manufacturer] ([ManufacturerId], [Name]) VALUES (2, N'Marco Tozzi')
 GO
-INSERT [dbo].[Manufacturer] ([ManufacturerId], [Manufacturer]) VALUES (3, N'Рос')
+INSERT [dbo].[Manufacturer] ([ManufacturerId], [Name]) VALUES (3, N'Рос')
 GO
-INSERT [dbo].[Manufacturer] ([ManufacturerId], [Manufacturer]) VALUES (4, N'Rieker')
+INSERT [dbo].[Manufacturer] ([ManufacturerId], [Name]) VALUES (4, N'Rieker')
 GO
-INSERT [dbo].[Manufacturer] ([ManufacturerId], [Manufacturer]) VALUES (5, N'Alessio Nesca')
+INSERT [dbo].[Manufacturer] ([ManufacturerId], [Name]) VALUES (5, N'Alessio Nesca')
 GO
-INSERT [dbo].[Manufacturer] ([ManufacturerId], [Manufacturer]) VALUES (6, N'CROSBY')
+INSERT [dbo].[Manufacturer] ([ManufacturerId], [Name]) VALUES (6, N'CROSBY')
 GO
 SET IDENTITY_INSERT [dbo].[Manufacturer] OFF
 GO
-SET IDENTITY_INSERT [dbo].[Order] ON 
+SET IDENTITY_INSERT [dbo].[OrderCompound] ON 
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (1, CAST(N'2025-04-20' AS Date), CAST(N'2025-04-20' AS Date), 4, 901, 1)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (39, 1, 1, 2, CAST(4990.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (2, CAST(N'2022-09-28' AS Date), CAST(N'2025-04-21' AS Date), 1, 902, 1)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (40, 1, 2, 2, CAST(3244.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (3, CAST(N'2025-03-21' AS Date), CAST(N'2025-04-22' AS Date), 2, 903, 1)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (41, 2, 3, 1, CAST(4499.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (4, CAST(N'2025-02-20' AS Date), CAST(N'2025-04-23' AS Date), 3, 904, 1)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (42, 3, 5, 10, CAST(3800.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (5, CAST(N'2025-03-17' AS Date), CAST(N'2025-04-24' AS Date), 4, 905, 1)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (43, 4, 7, 5, CAST(2700.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (6, CAST(N'2025-03-01' AS Date), CAST(N'2025-04-25' AS Date), 1, 906, 1)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (44, 4, 8, 4, CAST(1890.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (7, CAST(N'2025-03-02' AS Date), CAST(N'2025-04-26' AS Date), 2, 907, 1)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (45, 4, 4, 1, CAST(5900.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (8, CAST(N'2025-03-31' AS Date), CAST(N'2025-04-27' AS Date), 3, 908, 2)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (46, 5, 1, 2, CAST(4990.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (9, CAST(N'2025-04-02' AS Date), CAST(N'2025-04-28' AS Date), 4, 909, 2)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (47, 5, 2, 2, CAST(3244.00 AS Decimal(8, 2)))
 GO
-INSERT [dbo].[Order] ([OrderId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (10, CAST(N'2025-04-03' AS Date), CAST(N'2025-04-29' AS Date), 4, 910, 2)
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (48, 6, 3, 1, CAST(4499.00 AS Decimal(8, 2)))
 GO
-SET IDENTITY_INSERT [dbo].[Order] OFF
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (49, 6, 4, 1, CAST(5900.00 AS Decimal(8, 2)))
+GO
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (50, 7, 5, 3, CAST(3800.00 AS Decimal(8, 2)))
+GO
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (51, 7, 6, 10, CAST(4100.00 AS Decimal(8, 2)))
+GO
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (52, 8, 7, 5, CAST(2700.00 AS Decimal(8, 2)))
+GO
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (53, 8, 8, 4, CAST(1890.00 AS Decimal(8, 2)))
+GO
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (54, 9, 9, 5, CAST(4300.00 AS Decimal(8, 2)))
+GO
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (55, 9, 10, 1, CAST(2800.00 AS Decimal(8, 2)))
+GO
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (56, 9, 6, 1, CAST(4100.00 AS Decimal(8, 2)))
+GO
+INSERT [dbo].[OrderCompound] ([OrderCompoundId], [OrderInfoId], [ProductId], [Quantity], [OrderedPrice]) VALUES (57, 10, 11, 5, CAST(2156.00 AS Decimal(8, 2)))
+GO
+SET IDENTITY_INSERT [dbo].[OrderCompound] OFF
+GO
+SET IDENTITY_INSERT [dbo].[OrderInfo] ON 
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (1, CAST(N'2025-04-20' AS Date), CAST(N'2025-04-20' AS Date), 4, 901, 1)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (2, CAST(N'2022-09-28' AS Date), CAST(N'2025-04-21' AS Date), 1, 902, 1)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (3, CAST(N'2025-03-21' AS Date), CAST(N'2025-04-22' AS Date), 2, 903, 1)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (4, CAST(N'2025-02-20' AS Date), CAST(N'2025-04-23' AS Date), 3, 904, 1)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (5, CAST(N'2025-03-17' AS Date), CAST(N'2025-04-24' AS Date), 4, 905, 1)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (6, CAST(N'2025-03-01' AS Date), CAST(N'2025-04-25' AS Date), 1, 906, 1)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (7, CAST(N'2025-03-02' AS Date), CAST(N'2025-04-26' AS Date), 2, 907, 1)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (8, CAST(N'2025-03-31' AS Date), CAST(N'2025-04-27' AS Date), 3, 908, 2)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (9, CAST(N'2025-04-02' AS Date), CAST(N'2025-04-28' AS Date), 4, 909, 2)
+GO
+INSERT [dbo].[OrderInfo] ([OrderInfoId], [OrderDate], [DeliveryDate], [UserId], [ReceiveCode], [StatusId]) VALUES (10, CAST(N'2025-04-03' AS Date), CAST(N'2025-04-29' AS Date), 4, 910, 2)
+GO
+SET IDENTITY_INSERT [dbo].[OrderInfo] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Person] ON 
 GO
@@ -488,37 +482,37 @@ SET IDENTITY_INSERT [dbo].[User] OFF
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ_User_Login]    Script Date: 20.12.2025 4:20:46 ******/
+/****** Object:  Index [UQ_User_Login]    Script Date: 23.12.2025 16:30:18 ******/
 ALTER TABLE [dbo].[User] ADD  CONSTRAINT [UQ_User_Login] UNIQUE NONCLUSTERED 
 (
 	[Login] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[Item] ADD  CONSTRAINT [DF_Item_Quantity]  DEFAULT ((1)) FOR [Quantity]
+ALTER TABLE [dbo].[OrderCompound] ADD  CONSTRAINT [DF_Item_Quantity]  DEFAULT ((1)) FOR [Quantity]
 GO
-ALTER TABLE [dbo].[Item]  WITH CHECK ADD  CONSTRAINT [FK_Item_Order] FOREIGN KEY([OrderId])
-REFERENCES [dbo].[Order] ([OrderId])
+ALTER TABLE [dbo].[OrderCompound]  WITH CHECK ADD  CONSTRAINT [FK_OrderCompound_OrderInfo] FOREIGN KEY([OrderInfoId])
+REFERENCES [dbo].[OrderInfo] ([OrderInfoId])
 ON DELETE CASCADE
 GO
-ALTER TABLE [dbo].[Item] CHECK CONSTRAINT [FK_Item_Order]
+ALTER TABLE [dbo].[OrderCompound] CHECK CONSTRAINT [FK_OrderCompound_OrderInfo]
 GO
-ALTER TABLE [dbo].[Item]  WITH CHECK ADD  CONSTRAINT [FK_Item_Product] FOREIGN KEY([ProductId])
+ALTER TABLE [dbo].[OrderCompound]  WITH CHECK ADD  CONSTRAINT [FK_OrderCompound_Product] FOREIGN KEY([ProductId])
 REFERENCES [dbo].[Product] ([ProductId])
 ON DELETE CASCADE
 GO
-ALTER TABLE [dbo].[Item] CHECK CONSTRAINT [FK_Item_Product]
+ALTER TABLE [dbo].[OrderCompound] CHECK CONSTRAINT [FK_OrderCompound_Product]
 GO
-ALTER TABLE [dbo].[Order]  WITH CHECK ADD  CONSTRAINT [FK_Order_Status] FOREIGN KEY([StatusId])
+ALTER TABLE [dbo].[OrderInfo]  WITH CHECK ADD  CONSTRAINT [FK_OrderInfo_Status] FOREIGN KEY([StatusId])
 REFERENCES [dbo].[Status] ([StatusId])
 ON DELETE CASCADE
 GO
-ALTER TABLE [dbo].[Order] CHECK CONSTRAINT [FK_Order_Status]
+ALTER TABLE [dbo].[OrderInfo] CHECK CONSTRAINT [FK_OrderInfo_Status]
 GO
-ALTER TABLE [dbo].[Order]  WITH CHECK ADD  CONSTRAINT [FK_Order_User] FOREIGN KEY([UserId])
+ALTER TABLE [dbo].[OrderInfo]  WITH CHECK ADD  CONSTRAINT [FK_OrderInfo_User] FOREIGN KEY([UserId])
 REFERENCES [dbo].[User] ([UserId])
 ON DELETE CASCADE
 GO
-ALTER TABLE [dbo].[Order] CHECK CONSTRAINT [FK_Order_User]
+ALTER TABLE [dbo].[OrderInfo] CHECK CONSTRAINT [FK_OrderInfo_User]
 GO
 ALTER TABLE [dbo].[Product]  WITH CHECK ADD  CONSTRAINT [FK_Product_Category] FOREIGN KEY([CategoryId])
 REFERENCES [dbo].[Category] ([CategoryId])

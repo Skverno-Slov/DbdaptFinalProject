@@ -38,9 +38,9 @@ namespace StoreLib.Services
             await _context.SaveChangesAsync();
         }
 
-        public bool IsDiscountValid(byte discount)
+        public bool CheckDiscountValid(byte discount)
         {
-            if (discount >= 100)
+            if (discount >= 100 || discount < 0)
                 return false;
             return true;
         }
@@ -148,9 +148,9 @@ namespace StoreLib.Services
         public IQueryable<ProductCardDto> ApplySorting(string sortColumn, IQueryable<ProductCardDto> products)
             => sortColumn switch
             {
-                "supplier" => products.OrderBy(p => p.SupplierName),
-                "price" => products.OrderBy(p => p.Price),
-                "price_desc" => products.OrderByDescending(p => p.Price),
+                "По поставщику" => products.OrderBy(p => p.SupplierName),
+                "По цене (дешевые)" => products.OrderBy(p => p.Price),
+                "По цене (дорогие)" => products.OrderByDescending(p => p.Price),
                 _ => products.OrderBy(p => p.ProductName)
             };
 
@@ -171,19 +171,39 @@ namespace StoreLib.Services
                 Photo = productDto.Photo
             };
 
+
+        public bool ProductCodeExists(string productCode)
+            => _context.Products.Any(p => p.ProductCode == productCode);
+
         public bool ProductExists(int id) 
-            => _context.Products.Any(e => e.ProductId == id);
+            => _context.Products.Any(p => p.ProductId == id);
+
+        public async Task<List<Unit>>GetUnitsAsync()
+            => await _context.Units
+            .ToListAsync();
 
         public bool UnitExists(int id)
-            => _context.Units.Any(e => e.UnitId == id);
+            => _context.Units.Any(u => u.UnitId == id);
+
+        public async Task<List<Manufacturer>> GetManufacturersAsync()
+            => await _context.Manufacturers
+            .ToListAsync();
 
         public bool ManufacturerExists(int id)
-            => _context.Manufacturers.Any(e => e.ManufacturerId == id);
+            => _context.Manufacturers.Any(m => m.ManufacturerId == id);
+
+        public async Task<List<Supplier>> GetSuppliersAsync() 
+            => await _context.Suppliers
+            .ToListAsync();
 
         public bool SupplierExists(int id)
-            => _context.Suppliers.Any(e => e.SupplierId == id);
+            => _context.Suppliers.Any(s => s.SupplierId == id);
+
+        public async Task<List<Category>> GetCategoriesAsync()
+            => await _context.Categories
+            .ToListAsync();
 
         public bool CategorieExists(int id)
-            => _context.Categories.Any(e => e.CategoryId == id);
+            => _context.Categories.Any(c => c.CategoryId == id);
     }
 }

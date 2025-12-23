@@ -26,7 +26,7 @@ namespace StoreApi.Controllers
                 var product = await _productService
                     .GetProductAsync(id);
 
-                if (product == null)
+                if (product is null)
                     return NotFound();
 
                 return product;
@@ -45,7 +45,7 @@ namespace StoreApi.Controllers
                 var product = await _productService
                     .GetProductByCodeAsync(productCode);
 
-                if (product == null)
+                if (product is null)
                     return NotFound();
 
                 return product;
@@ -67,11 +67,29 @@ namespace StoreApi.Controllers
                     return BadRequest();
                 Product product = _productService.ConvertDtoToProduct(productDto);
 
-                if (product == null)
+                if (product is null)
                     return NotFound();
 
-                if (!_productService.IsDiscountValid(product.Discount))
-                    return BadRequest("Слишком блоьшая скидка");
+                if (String.IsNullOrWhiteSpace(product.ProductName))
+                    return BadRequest("Введите название");
+
+                if (String.IsNullOrWhiteSpace(product.ProductCode))
+                    return BadRequest("Введите артикул");
+
+                if (product.ProductCode.Length > 6)
+                    return BadRequest("Артикул слишком длинный");
+
+                if (product.ProductCode.Length < 6)
+                    return BadRequest("Артикул слишком короткий");
+
+                if (product.Price <= 0)
+                    return BadRequest("Цена не может быть отрицательной или 0");
+
+                if (product.StoredQuantity < 0)
+                    return BadRequest("Количество не может быть отрицательным");
+
+                if (!_productService.CheckDiscountValid(product.Discount))
+                    return BadRequest("Некорректная скидка");
 
                 if (!_productService.UnitExists(product.UnitId))
                     return BadRequest("Еденица измерения не существует");
@@ -111,8 +129,29 @@ namespace StoreApi.Controllers
             {
                 var product = _productService.ConvertDtoToProduct(productDto);
 
-                if (!_productService.IsDiscountValid(product.Discount))
-                    return BadRequest("Слишком блоьшая скидка");
+                if (String.IsNullOrWhiteSpace(product.ProductName))
+                    return BadRequest("Введите название");
+
+                if (String.IsNullOrWhiteSpace(product.ProductCode))
+                    return BadRequest("Введите артикул");
+
+                if (_productService.ProductCodeExists(product.ProductCode))
+                    return BadRequest("Артикул уже существкет");
+
+                if (product.ProductCode.Length > 6)
+                    return BadRequest("Артикул слишком длинный");
+
+                if (product.ProductCode.Length < 6)
+                    return BadRequest("Артикул слишком короткий");
+
+                if (product.Price <= 0)
+                    return BadRequest("Цена должна быть болше 0");
+
+                if (product.StoredQuantity < 0)
+                    return BadRequest("Количество должно быть больше 0 или 0");
+
+                if (!_productService.CheckDiscountValid(product.Discount))
+                    return BadRequest("Слишком большая скидка");
 
                 if (!_productService.UnitExists(product.UnitId))
                     return BadRequest("Еденица измерения не существует");
@@ -144,7 +183,7 @@ namespace StoreApi.Controllers
             try
             {
                 var product = await _productService.GetProductAsync(id);
-                if (product == null)
+                if (product is null)
                     return NotFound();
 
                 await _productService.DeleteProductAsync(product);

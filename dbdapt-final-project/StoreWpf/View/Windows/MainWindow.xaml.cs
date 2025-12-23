@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using StoreWpf.View.Pages;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,10 @@ namespace StoreWpf
         public MainWindow()
         {
             InitializeComponent();
+
+            PageHandler.CurrentFrame = MainFrame;
+
+            PageHandler.NavigateToLogin();
         }
     }
 }

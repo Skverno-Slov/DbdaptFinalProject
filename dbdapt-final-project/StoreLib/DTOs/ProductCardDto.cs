@@ -33,5 +33,10 @@ namespace StoreLib.DTOs
                 return Price;
             }
         }
+
+        public bool IsDiscountHight
+        {
+            get => Discount > 15;
+        }
     }
 }

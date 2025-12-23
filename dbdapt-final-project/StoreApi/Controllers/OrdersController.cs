@@ -23,7 +23,7 @@ namespace StoreApi.Controllers
             {
                 var orders = await _orderService.GetOrdersAsync(Login);
 
-                if (orders == null)
+                if (orders is null)
                     return NotFound();
 
                 if (orders.Count == 0)

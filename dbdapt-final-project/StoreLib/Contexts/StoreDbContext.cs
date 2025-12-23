@@ -39,7 +39,6 @@ public partial class StoreDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=dbdaptFinalProject;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -61,8 +60,6 @@ public partial class StoreDbContext : DbContext
 
         modelBuilder.Entity<OrderCompound>(entity =>
         {
-            entity.HasKey(e => e.OrderCompoundId).HasName("PK_OrderCompoundId");
-
             entity.ToTable("OrderCompound");
 
             entity.Property(e => e.OrderedPrice).HasColumnType("decimal(8, 2)");
@@ -79,17 +76,15 @@ public partial class StoreDbContext : DbContext
 
         modelBuilder.Entity<OrderInfo>(entity =>
         {
-            entity.HasKey(e => e.OrderInfoId).HasName("PK_Order");
-
             entity.ToTable("OrderInfo");
 
             entity.HasOne(d => d.Status).WithMany(p => p.OrderInfos)
                 .HasForeignKey(d => d.StatusId)
-                .HasConstraintName("FK_Order_Status");
+                .HasConstraintName("FK_OrderInfo_Status");
 
             entity.HasOne(d => d.User).WithMany(p => p.OrderInfos)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_Order_User");
+                .HasConstraintName("FK_OrderInfo_User");
         });
 
         modelBuilder.Entity<Person>(entity =>

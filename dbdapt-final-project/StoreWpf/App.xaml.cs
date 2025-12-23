@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using StoreLib.Contexts;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
@@ -9,6 +10,7 @@ namespace StoreWpf
     /// </summary>
     public partial class App : Application
     {
+        public static StoreDbContext StoreDbContext { get; } = new();
     }
 
 }
